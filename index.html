@@ -325,6 +325,23 @@
             #showreel { padding: 8rem 1rem; } 
         }
         @media (orientation: portrait) { .playback-main-view { width: 90vw; max-width: none; max-height: 90vw; } }
+        
+        /* Preloader mobile adjustments */
+        @media (max-width: 420px) {
+            .playback-info-bottom-center {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px 8px;
+                padding-bottom: 4px;
+            }
+            .playback-info .info-block, .playback-info .status-indicator {
+                font-size: 0.6rem;
+                padding: 3px 5px;
+            }
+             .playback-info {
+                gap: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
