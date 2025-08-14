@@ -528,13 +528,16 @@
             recStatus.classList.add('status-standby');
             recStatus.textContent = 'STBY';
             let frame = 17;
-            const standbyInterval = setInterval(() => { frame = (frame + 1) % 25; timecodeEl.textContent = `TC 02:08:45:${String(frame).padStart(2, '0')}`; }, 80);
+            const standbyInterval = setInterval(() => { 
+                frame = (frame + 1) % 25; 
+                timecodeEl.textContent = `TC 02:00:03:${String(frame).padStart(2, '0')}`; 
+            }, 80);
             window.onload = () => {
                 clearInterval(standbyInterval);
                 recStatus.classList.remove('status-standby');
                 recStatus.classList.add('status-rec');
                 recStatus.textContent = 'REC';
-                let s = 45, m = 8, h = 2, f = 17;
+                let s = 3, m = 0, h = 2, f = 17;
                 tcInterval = setInterval(() => { f++; if (f >= 25) { f = 0; s++; } if (s >= 60) { s = 0; m++; } if (m >= 60) { m = 0; h++; } if (h >= 24) { h = 0; } timecodeEl.textContent = `TC ${formatTime(h)}:${formatTime(m)}:${formatTime(s)}:${formatTime(f)}`; }, 40);
                 setTimeout(() => {
                     preloader.classList.add('is-loaded');
@@ -544,6 +547,22 @@
         } else {
              document.body.style.overflow = '';
         }
+
+        // --- Debounce function to limit resize event calls ---
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
 
         // --- Interactive Background Canvas Logic ---
         const canvas = document.getElementById('interactive-bg-canvas');
@@ -605,7 +624,7 @@
             
             function startAnimation() { if (animationFrameId) cancelAnimationFrame(animationFrameId); setupBackground(); animateBackground(); }
             startAnimation();
-            window.addEventListener('resize', startAnimation);
+            window.addEventListener('resize', debounce(startAnimation, 250));
             let scrollTimeout;
             window.addEventListener('scroll', () => { if (scrollTimeout) cancelAnimationFrame(scrollTimeout); scrollTimeout = requestAnimationFrame(findInteractiveElements); }, { passive: true });
         }
