@@ -350,7 +350,7 @@
                         <div class="info-block">CARD: 0:21h</div>
                     </div>
                     <div class="bottom-info-group">
-                        <div id="timecode" class="info-block">TC 02:00:45:17</div>
+                        <div id="timecode" class="info-block">TC 20:00:03:17</div>
                     </div>
                 </div>
             </div>
@@ -499,18 +499,16 @@
                 <div class="modal-video-wrapper">
                     <iframe id="modal-video" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
                 </div>
-                <!-- NEW Stills Container -->
                 <div id="modal-stills-wrapper" class="hidden">
-                     <div id="modal-stills-gallery" class="relative w-full aspect-video bg-black/50 rounded-lg">
-                        <img id="stills-image" src="" alt="Still from project" class="w-full h-full object-contain rounded-lg">
-                        <button id="stills-prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 nav-button">&lt;</button>
-                        <button id="stills-next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 nav-button">&gt;</button>
-                    </div>
+                         <div id="modal-stills-gallery" class="relative w-full aspect-video bg-black/50 rounded-lg">
+                             <img id="stills-image" src="" alt="Still from project" class="w-full h-full object-contain rounded-lg">
+                             <button id="stills-prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 nav-button">&lt;</button>
+                             <button id="stills-next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 nav-button">&gt;</button>
+                         </div>
                 </div>
                 <div class="modal-text-content">
                     <h3 id="modal-title" class="section-title"></h3>
                     <p id="modal-description"></p>
-                    <!-- NEW Link Button Container -->
                     <div id="modal-link-container" class="mt-4"></div>
                 </div>
             </div>
@@ -551,251 +549,88 @@
         const canvas = document.getElementById('interactive-bg-canvas');
         if (canvas) {
             const ctx = canvas.getContext('2d');
-            let clouds = [];
-            let stars = [];
-            let shootingStars = [];
-            let interactiveElements = [];
+            let clouds = [], stars = [], shootingStars = [], interactiveElements = [];
             let animationFrameId;
-
-            // Mouse object for parallax effect
-            const mouse = { x: 0, y: 0 };
-            const targetMouse = { x: 0, y: 0 };
-            const parallaxIntensity = 35; // ENHANCED: Increased intensity
+            const mouse = { x: 0, y: 0 }, targetMouse = { x: 0, y: 0 };
+            const parallaxIntensity = 35;
 
             window.addEventListener('mousemove', (e) => {
                 targetMouse.x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
                 targetMouse.y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
             });
 
-            // Star class with parallax effect
             class Star {
-                constructor(width, height) {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
-                    this.radius = Math.random() * 1.2 + 0.5;
-                    this.baseAlpha = Math.random() * 0.6 + 0.2;
-                    this.alpha = 0;
-                    this.phase = Math.random() * Math.PI * 2;
-                    this.twinkleSpeed = Math.random() * 0.002 + 0.001;
-                    this.depth = Math.random() * 0.6 + 0.1; 
-                }
-                update() {
-                    this.phase += this.twinkleSpeed;
-                    this.alpha = this.baseAlpha * (Math.sin(this.phase) * 0.5 + 0.5);
-                }
-                draw(context) {
-                    if (this.alpha <= 0.01) return;
-                    const offsetX = mouse.x * parallaxIntensity * this.depth;
-                    const offsetY = mouse.y * parallaxIntensity * this.depth;
-
-                    context.beginPath();
-                    context.arc(this.x + offsetX, this.y + offsetY, this.radius, 0, Math.PI * 2);
-                    context.fillStyle = `rgba(230, 230, 255, ${this.alpha})`;
-                    context.fill();
-                }
+                constructor(w, h) { this.x = Math.random() * w; this.y = Math.random() * h; this.radius = Math.random() * 1.2 + 0.5; this.baseAlpha = Math.random() * 0.6 + 0.2; this.alpha = 0; this.phase = Math.random() * Math.PI * 2; this.twinkleSpeed = Math.random() * 0.002 + 0.001; this.depth = Math.random() * 0.6 + 0.1; }
+                update() { this.phase += this.twinkleSpeed; this.alpha = this.baseAlpha * (Math.sin(this.phase) * 0.5 + 0.5); }
+                draw(ctx) { if (this.alpha <= 0.01) return; const offX = mouse.x * parallaxIntensity * this.depth; const offY = mouse.y * parallaxIntensity * this.depth; ctx.beginPath(); ctx.arc(this.x + offX, this.y + offY, this.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(230, 230, 255, ${this.alpha})`; ctx.fill(); }
             }
 
-            // Shooting Star class
             class ShootingStar {
-                constructor(width, height) { this.reset(width, height); }
-                reset(width, height) {
-                    this.active = false; this.waitTime = new Date().getTime() + Math.random() * 8000 + 5000;
-                    this.x = Math.random() * width * 1.5 - (width * 0.25); this.y = Math.random() * height * 0.5;
-                    this.len = Math.random() * 150 + 50; this.speed = Math.random() * 8 + 8;
-                    this.size = Math.random() * 1.2 + 0.3; this.angle = Math.PI * 0.15;
-                }
-                update(width, height) {
-                    if (this.active) {
-                        this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed;
-                        if (this.x - this.len > width || this.y - this.len > height) { this.reset(width, height); }
-                    } else { if (new Date().getTime() > this.waitTime) { this.active = true; } }
-                }
-                draw(context) {
-                    if (this.active) {
-                        context.beginPath(); const tailX = this.x - Math.cos(this.angle) * this.len; const tailY = this.y - Math.sin(this.angle) * this.len;
-                        context.moveTo(this.x, this.y); context.lineTo(tailX, tailY); context.lineWidth = this.size;
-                        const grad = context.createLinearGradient(this.x, this.y, tailX, tailY);
-                        grad.addColorStop(0, "rgba(255, 255, 255, 0.6)"); grad.addColorStop(1, "rgba(255, 255, 255, 0)");
-                        context.strokeStyle = grad; context.stroke();
-                    }
-                }
+                constructor(w, h) { this.reset(w, h); }
+                reset(w, h) { this.active = false; this.waitTime = Date.now() + Math.random() * 8000 + 5000; this.x = Math.random() * w * 1.5 - (w * 0.25); this.y = Math.random() * h * 0.5; this.len = Math.random() * 150 + 50; this.speed = Math.random() * 8 + 8; this.size = Math.random() * 1.2 + 0.3; this.angle = Math.PI * 0.15; }
+                update(w, h) { if (this.active) { this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; if (this.x - this.len > w || this.y - this.len > h) this.reset(w, h); } else if (Date.now() > this.waitTime) { this.active = true; } }
+                draw(ctx) { if (!this.active) return; const tailX = this.x - Math.cos(this.angle) * this.len; const tailY = this.y - Math.sin(this.angle) * this.len; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(tailX, tailY); ctx.lineWidth = this.size; const grad = ctx.createLinearGradient(this.x, this.y, tailX, tailY); grad.addColorStop(0, "rgba(255, 255, 255, 0.6)"); grad.addColorStop(1, "rgba(255, 255, 255, 0)"); ctx.strokeStyle = grad; ctx.stroke(); }
             }
 
-            // ENHANCED: Cloud class for more active movement
             class Cloud {
-                constructor(width, height) {
-                    this.canvasWidth = width; this.canvasHeight = height;
-                    this.x = Math.random() * this.canvasWidth; this.y = Math.random() * this.canvasHeight;
-                    this.driftX = (Math.random() - 0.5) * 0.4; // ENHANCED: Increased base drift
-                    this.driftY = (Math.random() - 0.5) * 0.4; // ENHANCED: Increased base drift
-                    this.vx = this.driftX; this.vy = this.driftY;
-                    this.size = Math.random() * 350 + 250; 
-                    this.baseAlpha = Math.random() * 0.12 + 0.1; 
-                    this.alpha = 0; this.phase = Math.random() * Math.PI * 2;
-                }
-                update() {
-                    let targetVX = this.driftX; let targetVY = this.driftY;
-                    for (const el of interactiveElements) {
-                        const dx = this.x - el.cx; const dy = this.y - el.cy;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        const repelRadius = el.radius + this.size * 0.4; 
-                        if (dist < repelRadius) {
-                            const force = 1 - (dist / repelRadius);
-                            const angle = Math.atan2(dy, dx);
-                            targetVX += Math.cos(angle) * force * 7.5; // ENHANCED: Increased repel force
-                            targetVY += Math.sin(angle) * force * 7.5; // ENHANCED: Increased repel force
-                        }
-                    }
-                    this.vx += (targetVX - this.vx) * 0.12; // ENHANCED: Faster reaction
-                    this.vy += (targetVY - this.vy) * 0.12; // ENHANCED: Faster reaction
-                    this.x += this.vx; this.y += this.vy;
-                    if (this.x > this.canvasWidth + this.size) this.x = -this.size;
-                    if (this.x < -this.size) this.x = this.canvasWidth + this.size;
-                    if (this.y > this.canvasHeight + this.size) this.y = -this.size;
-                    if (this.y < -this.size) this.y = this.canvasHeight + this.size;
-                    this.phase += 0.003;
-                    let targetAlpha = this.baseAlpha + (Math.sin(this.phase) * this.baseAlpha * 0.6);
-                    this.alpha += (targetAlpha - this.alpha) * 0.05;
-                }
-                draw(context) {
-                    if (this.alpha <= 0.001) return;
-                    context.beginPath();
-                    const gradient = context.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-                    gradient.addColorStop(0, `rgba(173, 216, 230, ${this.alpha * 0.6})`);
-                    gradient.addColorStop(0.3, `rgba(91, 149, 187, ${this.alpha * 0.3})`);
-                    gradient.addColorStop(1, `rgba(70, 99, 127, 0)`);
-                    context.fillStyle = gradient;
-                    context.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                    context.fill();
-                }
+                constructor(w, h) { this.w = w; this.h = h; this.x = Math.random() * w; this.y = Math.random() * h; this.driftX = (Math.random() - 0.5) * 0.4; this.driftY = (Math.random() - 0.5) * 0.4; this.vx = this.driftX; this.vy = this.driftY; this.size = Math.random() * 350 + 250; this.baseAlpha = Math.random() * 0.12 + 0.1; this.alpha = 0; this.phase = Math.random() * Math.PI * 2; }
+                update() { let tVX = this.driftX, tVY = this.driftY; for (const el of interactiveElements) { const dx = this.x - el.cx, dy = this.y - el.cy, dist = Math.sqrt(dx * dx + dy * dy), repelR = el.radius + this.size * 0.4; if (dist < repelR) { const force = 1 - (dist / repelR), angle = Math.atan2(dy, dx); tVX += Math.cos(angle) * force * 7.5; tVY += Math.sin(angle) * force * 7.5; } } this.vx += (tVX - this.vx) * 0.12; this.vy += (tVY - this.vy) * 0.12; this.x += this.vx; this.y += this.vy; if (this.x > this.w + this.size) this.x = -this.size; if (this.x < -this.size) this.x = this.w + this.size; if (this.y > this.h + this.size) this.y = -this.size; if (this.y < -this.size) this.y = this.h + this.size; this.phase += 0.003; let tA = this.baseAlpha + (Math.sin(this.phase) * this.baseAlpha * 0.6); this.alpha += (tA - this.alpha) * 0.05; }
+                draw(ctx) { if (this.alpha <= 0.001) return; ctx.beginPath(); const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size); grad.addColorStop(0, `rgba(173, 216, 230, ${this.alpha * 0.6})`); grad.addColorStop(0.3, `rgba(91, 149, 187, ${this.alpha * 0.3})`); grad.addColorStop(1, `rgba(70, 99, 127, 0)`); ctx.fillStyle = grad; ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
             }
             
             function findInteractiveElements() {
                 interactiveElements = [];
                 document.querySelectorAll('.section .content-container, .project-card.active, .showreel-player-container, .contact-button, .header-scrolled, #backstage .glass-effect').forEach(el => {
                     const rect = el.getBoundingClientRect();
-                    if (rect.width > 0 && rect.height > 0) {
-                        interactiveElements.push({
-                            cx: rect.left + rect.width / 2,
-                            cy: rect.top + rect.height / 2,
-                            radius: Math.max(rect.width, rect.height) / 2 + 60
-                        });
-                    }
+                    if (rect.width > 0 && rect.height > 0) interactiveElements.push({ cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2, radius: Math.max(rect.width, rect.height) / 2 + 60 });
                 });
             }
 
             function setupBackground() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+                canvas.width = window.innerWidth; canvas.height = window.innerHeight;
                 clouds = []; stars = []; shootingStars = [];
-                const cloudCount = Math.floor((canvas.width * canvas.height) / 28000); // ENHANCED: More clouds
-                const starCount = 150; 
-                const shootingStarCount = 3;
-                for (let i = 0; i < cloudCount; i++) { clouds.push(new Cloud(canvas.width, canvas.height)); }
-                for (let i = 0; i < starCount; i++) { stars.push(new Star(canvas.width, canvas.height)); }
-                for (let i = 0; i < shootingStarCount; i++) { shootingStars.push(new ShootingStar(canvas.width, canvas.height)); }
+                const cloudCount = Math.floor((canvas.width * canvas.height) / 28000), starCount = 150, shootingStarCount = 3;
+                for (let i = 0; i < cloudCount; i++) clouds.push(new Cloud(canvas.width, canvas.height));
+                for (let i = 0; i < starCount; i++) stars.push(new Star(canvas.width, canvas.height));
+                for (let i = 0; i < shootingStarCount; i++) shootingStars.push(new ShootingStar(canvas.width, canvas.height));
                 findInteractiveElements();
             }
 
             function animateBackground() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                
-                mouse.x += (targetMouse.x - mouse.x) * 0.05;
-                mouse.y += (targetMouse.y - mouse.y) * 0.05;
-
-                shootingStars.forEach(s => { s.update(canvas.width, canvas.height); s.draw(ctx); });
-                stars.forEach(s => { s.update(); s.draw(ctx); });
-                clouds.forEach(p => { p.update(); p.draw(ctx); });
+                mouse.x += (targetMouse.x - mouse.x) * 0.05; mouse.y += (targetMouse.y - mouse.y) * 0.05;
+                [...shootingStars, ...stars, ...clouds].forEach(s => { s.update(canvas.width, canvas.height); s.draw(ctx); });
                 animationFrameId = requestAnimationFrame(animateBackground);
             }
             
-            function startAnimation() {
-                if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                setupBackground();
-                animateBackground();
-            }
-
+            function startAnimation() { if (animationFrameId) cancelAnimationFrame(animationFrameId); setupBackground(); animateBackground(); }
             startAnimation();
             window.addEventListener('resize', startAnimation);
-            
             let scrollTimeout;
-            window.addEventListener('scroll', () => {
-                if (scrollTimeout) window.cancelAnimationFrame(scrollTimeout);
-                scrollTimeout = window.requestAnimationFrame(findInteractiveElements);
-            }, { passive: true });
+            window.addEventListener('scroll', () => { if (scrollTimeout) cancelAnimationFrame(scrollTimeout); scrollTimeout = requestAnimationFrame(findInteractiveElements); }, { passive: true });
         }
 
         // --- General Page Logic ---
         const header = document.getElementById('header');
         const body = document.body;
-        
-        const revealElements = document.querySelectorAll('.reveal-on-scroll');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
-        revealElements.forEach(el => {
-            observer.observe(el);
-        });
-
-        function handleScrollEffects() {
-            const scrollY = window.scrollY;
-            header.classList.toggle('header-scrolled', scrollY > 50);
-            body.classList.toggle('scrolled', scrollY > 50);
-        }
+        const observer = new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.1 });
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
 
         let ticking = false;
         window.addEventListener('scroll', () => {
-            if (!ticking) {
-                window.requestAnimationFrame(() => {
-                    handleScrollEffects();
-                    ticking = false;
-                });
-                ticking = true;
-            }
+            if (!ticking) { window.requestAnimationFrame(() => { header.classList.toggle('header-scrolled', window.scrollY > 50); body.classList.toggle('scrolled', window.scrollY > 50); ticking = false; }); ticking = true; }
         }, { passive: true });
 
-        // Full effect for top navigation
-        const magneticNavButtons = document.querySelectorAll('.header .magnetic-button');
-        magneticNavButtons.forEach(button => {
-            const strength = 40; // Restore full strength
+        document.querySelectorAll('.magnetic-button, .magnetic-button-contact').forEach(button => {
+            const strength = button.classList.contains('magnetic-button-contact') ? 10 : 40;
             button.addEventListener('mousemove', (e) => {
-                const rect = button.getBoundingClientRect();
-                const { left, top, width, height } = rect;
-                const x = e.clientX - left;
-                const y = e.clientY - top;
-                const moveX = (x - width / 2) / width * strength;
-                const moveY = (y - height / 2) / height * strength;
+                const { left, top, width, height } = button.getBoundingClientRect();
+                const moveX = (e.clientX - left - width / 2) / width * strength;
+                const moveY = (e.clientY - top - height / 2) / height * strength;
                 button.style.transform = `translate(${moveX}px, ${moveY}px)`;
             });
-            button.addEventListener('mouseleave', () => {
-                button.style.transform = 'translate(0, 0)';
-            });
+            button.addEventListener('mouseleave', () => button.style.transform = 'translate(0, 0)');
         });
-
-        // Vertical-only effect for contact buttons
-        const magneticContactButtons = document.querySelectorAll('#contact .magnetic-button-contact');
-        magneticContactButtons.forEach(button => {
-            const strength = 10; // FURTHER REDUCED STRENGTH
-            button.addEventListener('mousemove', (e) => {
-                const rect = button.getBoundingClientRect();
-                const { left, top, width, height } = rect;
-                const x = e.clientX - left;
-                const y = e.clientY - top;
-                const moveX = (x - width / 2) / width * strength;
-                const moveY = (y - height / 2) / height * strength;
-                button.style.transform = `translate(${moveX}px, ${moveY}px)`;
-            });
-            button.addEventListener('mouseleave', () => {
-                button.style.transform = 'translate(0, 0)';
-            });
-        });
-
 
         // --- Modal Logic ---
         const projectModal = document.getElementById('project-modal');
@@ -810,19 +645,11 @@
         const stillsPrevBtn = document.getElementById('stills-prev-btn');
         const stillsNextBtn = document.getElementById('stills-next-btn');
         const modalLinkContainer = document.getElementById('modal-link-container');
-        let lastClickedCard = null;
-        let currentStills = [];
-        let currentStillIndex = 0;
+        let lastClickedCard = null, currentStills = [], currentStillIndex = 0;
 
-        function showStill(index) {
-            if (!currentStills || currentStills.length === 0) return;
-            currentStillIndex = (index + currentStills.length) % currentStills.length;
-            stillsImage.src = currentStills[currentStillIndex];
-        }
-        
+        function showStill(index) { if (!currentStills || currentStills.length === 0) return; currentStillIndex = (index + currentStills.length) % currentStills.length; stillsImage.src = currentStills[currentStillIndex]; }
         if(stillsPrevBtn) stillsPrevBtn.addEventListener('click', () => showStill(currentStillIndex - 1));
         if(stillsNextBtn) stillsNextBtn.addEventListener('click', () => showStill(currentStillIndex + 1));
-
 
         function openModal(project, cardElement, videoSrc) {
             if (!project || !cardElement) return;
@@ -830,42 +657,31 @@
             lastClickedCard.classList.add('is-opening-modal');
             
             modalTitle.textContent = project.title;
-            modalDescription.textContent = project.description;
+            modalDescription.innerHTML = `<strong>Роль:</strong> ${project.role || 'Не указана'}<br><br>${project.description || ''}`;
+            
+            modalLinkContainer.innerHTML = '';
+            if (project.externalLink) {
+                const linkButton = document.createElement('a');
+                linkButton.href = project.externalLink;
+                linkButton.target = '_blank';
+                linkButton.className = 'contact-button magnetic-button-contact pulsate-on-hover mt-4 inline-block';
+                linkButton.textContent = project.linkLabel || 'Смотреть';
+                modalLinkContainer.appendChild(linkButton);
+            }
 
-            // Clear previous dynamic content
-            if(modalLinkContainer) modalLinkContainer.innerHTML = '';
+            modalVideoWrapper.classList.toggle('hidden', project.type === 'stills' || !videoSrc);
+            modalStillsWrapper.classList.toggle('hidden', project.type !== 'stills');
 
-            if (project.type === 'stills' && modalStillsWrapper) {
-                // Handle stills type
-                modalVideoWrapper.classList.add('hidden');
-                modalStillsWrapper.classList.remove('hidden');
-                
-                currentStills = project.stills;
+            if (project.type === 'stills') {
+                currentStills = project.stills || [];
                 showStill(0);
-
-                if (project.externalLink) {
-                    const linkButton = document.createElement('a');
-                    linkButton.href = project.externalLink;
-                    linkButton.target = '_blank';
-                    linkButton.className = 'contact-button magnetic-button pulsate-on-hover mt-4'; // Reuse contact button style
-                    linkButton.textContent = 'Перейти на Кинопоиск';
-                    modalLinkContainer.appendChild(linkButton);
-                }
-
-            } else {
-                // Handle default video type
-                modalVideoWrapper.classList.remove('hidden');
-                if(modalStillsWrapper) modalStillsWrapper.classList.add('hidden');
+            } else if (videoSrc) {
                 modalVideo.src = videoSrc;
             }
             
             projectModal.classList.add('is-visible');
             document.body.style.overflow = 'hidden';
-            
-            requestAnimationFrame(() => {
-                modalContent.style.transform = 'scale(1)';
-                modalContent.style.opacity = '1';
-            });
+            requestAnimationFrame(() => { modalContent.style.transform = 'scale(1)'; modalContent.style.opacity = '1'; });
         }
 
         function closeModal() {
@@ -874,12 +690,7 @@
             modalVideo.src = "";
             stillsImage.src = "";
             currentStills = [];
-            currentStillIndex = 0;
-            if(modalLinkContainer) modalLinkContainer.innerHTML = '';
-            if (lastClickedCard) {
-                lastClickedCard.classList.remove('is-opening-modal');
-                lastClickedCard = null;
-            }
+            if (lastClickedCard) { lastClickedCard.classList.remove('is-opening-modal'); lastClickedCard = null; }
         }
 
         modalCloseBtn.addEventListener('click', closeModal);
@@ -888,55 +699,26 @@
 
         // --- Carousel Data and Initialization ---
         const mainProjects = [
-            { 
-                title: "Закрывай замок на два оборота", 
-                description: "В этом проекте я вырос от камерамена до второго оператора. Я отвечал за сметы по свету и камере, проводил пре-шуты и предлагал оператору-постановщику схемы света, беря на себя значительную часть его работы.",
-                imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg",
-                type: 'stills',
-                stills: [
-                    'https://i.postimg.cc/v8LVqfp2/2025-08-14-22-29-08.jpg',
-                    'https://i.postimg.cc/Vv1bskbF/2025-08-14-22-43-03.jpg',
-                    'https://i.postimg.cc/Xq8Br6f6/2025-08-14-22-43-45.jpg'
-                ],
-                externalLink: "https://www.kinopoisk.ru/film/5368457",
-                videoUrl: "#"
-            },
-            { 
-                title: "Реклама Aikon", 
-                description: "Игровая реклама, где мне не понравилась финальная цветокоррекция. Я перекрасил часть кадров, чтобы показать свое видение.", 
-                imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", 
-                type: 'stills',
-                stills: [
-                    'https://placehold.co/1280x720/050508/ffffff?text=Still+1',
-                    'https://placehold.co/1280x720/050508/ffffff?text=Still+2',
-                ],
-                videoUrl: "https://disk.yandex.ru/i/V28Bf8VS9bBBwA" 
-            },
-            { title: "Реклама StarLine", description: "В этом проекте я совмещал роли режиссера и оператора, получив ценный опыт работы с роборукой. Несмотря на разногласия с клиентом, я оставил версию монтажа, близкую к изначальной задумке.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
-            { title: "Beluga", description: "Мой первый опыт работы с крупным европейским брендом. Проект был связан строгим NDA на 250 000€.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
-            { title: "Егор Шип, Никита Кунов, Derouse", description: "Сложная, но невероятно интересная 27-часовая смена. Мы построили сцену на мусорной свалке и успешно решали все возникающие проблемы, что стало отличной проверкой профессионализма.", imageUrl: "https://i.postimg.cc/7hTvY0jF/2025-03-18-10-19-50.jpg", videoUrl: "https://www.youtube.com/watch?v=ewnrSaozgdI" },
-            { title: "Bardakk & Privetallog - Дело времени", description: "Творческий клип, в котором я экспериментировал с цветом и изображением, чтобы добиться стильного 'film look'. Результатом я очень доволен.", imageUrl: "https://i.postimg.cc/FHVX0FC8/2025-08-12-21-11-38.jpg", videoUrl: "https://youtu.be/V_kQFygdvKQ" },
-            { title: "Jony VTB Arena", description: "Опыт работы оператором-постановщиком на большом концерте. Получилось сильное и классное видео, которое я до сих пор с удовольствием пересматриваю.", imageUrl: "https://i.postimg.cc/0NBvnWfR/jhn.jpg", videoUrl: "https://vimeo.com/896531109" },
-            { title: "The Story", description: "Проект, снятый в театре с реальной балериной. Мы проводили параллель между ее внутренним миром и натурой, создавая глубокую визуальную метафору.", imageUrl: "https://i.postimg.cc/c1PWSb89/2025-08-12-21-09-06.jpg", videoUrl: "https://vimeo.com/1028864286" },
-            { title: "Davlatova - Напоминало (снипет)", description: "Творческая работа, в которой я экспериментировал с изображением, чтобы создать красивую и мрачную хоррор-атмосферу.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
-            { title: "Liriana - Если не любовь", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" },
-            { title: "Litmanovich", description: "Один из первых клипов, снятый для друга. Это было начало моего пути, и в нем есть как удачные моменты, так и те, что стали ценным уроком.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731" },
-            { title: "Queen of the Night", description: "Экспериментальная творческая работа.", imageUrl: "https://i.postimg.cc/9Mr33dXH/2025-08-12-21-19-12.jpg", videoUrl: "https://vimeo.com/894197378" },
+            { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/v8LVqfp2/2025-08-14-22-29-08.jpg', 'https://i.postimg.cc/Vv1bskbF/2025-08-14-22-43-03.jpg', 'https://i.postimg.cc/Xq8Br6f6/2025-08-14-22-43-45.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
+            { title: 'Реклама для "ikon"', role: "Оператор / Colorist (авторская версия)", description: "Игровая реклама для бренда iCon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", videoUrl: "https://disk.yandex.ru/i/V28Bf8VS9bBBwA" },
+            { title: 'Проморолик для "StarLine"', role: "Режиссер, Оператор-постановщик", description: "В этом проекте я совмещал роли режиссера и оператора, работая со сложным оборудованием — роботизированной рукой (Robotic Arm). Здесь представлена моя авторская версия монтажа, наиболее полно отражающая оригинальный художественный замысел.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
+            { title: 'Рилс для "Beluga"', role: "Оператор (в составе команды)", description: "Проект для международного премиум-бренда Beluga, ставший моим первым опытом работы на европейском рынке. Участвовал в создании визуального контента в рамках высокобюджетной кампании (проект с подписанным NDA на сумму €250,000). Этот опыт подтверждает мое умение работать по высоким стандартам и соответствовать требованиям крупных мировых брендов.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
+            { title: 'Клип для "Егор Шип & Никита Кунов"', role: "Оператор-постановщик", description: "Сложнопостановочный клип, где я проявил навыки кризис-менеджмента. Несмотря на тщательную подготовку, на площадке возникали непредвиденные ситуации, требующие мгновенной реакции и нестандартных решений. Смена длилась 27 часов и включала строительство декорации на мусорном полигоне. Этот опыт продемонстрировал мою выносливость, стрессоустойчивость и способность добиваться результата в экстремальных условиях.", imageUrl: "https://i.postimg.cc/7hTvY0jF/2025-03-18-10-19-50.jpg", videoUrl: "https://www.youtube.com/watch?v=ewnrSaozgdI" },
+            { title: 'Клип "Бардак – Дело времени"', role: "Режиссер, Оператор-постановщик", description: "Творческий проект, в котором я исследовал эстетику аналоговой кинопленки, экспериментируя с цветом и композицией. Основной задачей было создание характерного «film look» и передача меланхоличной атмосферы. Эта работа — пример моего авторского видения и поиска уникального визуального языка вне коммерческих рамок.", imageUrl: "https://i.postimg.cc/FHVX0FC8/2025-08-12-21-11-38.jpg", videoUrl: "https://youtu.be/V_kQFygdvKQ" },
+            { title: "Концерт JONY, ВТБ Арена", role: "Оператор-постановщик (Director of Photography)", description: "Опыт работы в качестве оператора-постановщика на масштабном мероприятии — сольном концерте JONY на ВТБ Арене. Я отвечал за всю визуальную составляющую съемки: организацию многокамерной работы, постановку кадра и выбор ракурсов. Моей задачей было направить команду операторов и создать единый, динамичный визуальный ряд, который точно передает энергетику живого шоу.", imageUrl: "https://i.postimg.cc/0NBvnWfR/jhn.jpg", videoUrl: "https://vimeo.com/896531109" },
+            { title: '"The Story"', role: "Режиссер, Оператор-постановщик", description: "Визуальная притча, исследующая параллели между сценическим образом и внутренним миром героини — реальной балерины. Съемки проходили в аутентичных локациях театра и на натуре, сочетая документальные наблюдения с постановочными хореографическими этюдами. Проект о хрупкости души, скрытой за изнурительной дисциплиной большого искусства.", imageUrl: "https://i.postimg.cc/c1PWSb89/2025-08-12-21-09-06.jpg", videoUrl: "https://vimeo.com/1028864286" },
+            { title: 'Сниппет "Dovlatova"', role: "Режиссер, Оператор-постановщик", description: "Творческий эксперимент по созданию атмосферы мрачной сказки. В этом сниппете я работал над эстетикой «сказочного хоррора», уделяя особое внимание свету и композиции для создания тревожного и в то же время завораживающего настроения. Это мое исследование жанра и визуальных техник для погружения зрителя в потусторонний мир.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
+            { title: 'Клип "Litkovich – Принцип"', role: "Режиссер, Оператор-постановщик", description: "Одна из моих первых полноценных работ, ставшая отправной точкой в моем профессиональном пути. Этот проект был важнейшим этапом обучения «в поле», на котором я впервые провел идею через все стадии производства до финального монтажа. Он заложил основу для моего дальнейшего творческого и технического роста.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731"},
+            { title: "Liriana - Если не любовь", role: "Оператор-постановщик", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" }
         ];
         const experienceProjects = [
-            { 
-                title: "ТНТ Премьер & Пушкинский музей", 
-                description: "Съемки для проекта 'Личная коллекция'. Я работал в качестве B-cam и оператора ручной камеры.", 
-                imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", 
-                videoUrl: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", 
-                redirect: true 
-            },
-            { title: "Yandex Lavka spec", description: "Спецпроект для Яндекс.Лавки. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
-            { title: "Lime - fashion spec ads", description: "Спек реклама для бренда Lime. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
-            { title: "Че о че", description: "Короткометражка на Wink, на которой я был камераменом.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
-            { title: "Ренессанс кредит", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Ренессанс", videoUrl: "#" },
-            { title: "Вкусно так", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Вкусно так", videoUrl: "#" },
-            { title: "SneakerBox", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "SneakerBox", videoUrl: "#" },
+            { title: "ТНТ Premier x Пушкинский музей", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках коммерческого проекта для бренда ТНТ Premier. В составе команды работал в качестве камерного оператора, отвечал за работу с ручной камерой (камерой 'Б'). Этот опыт укрепил мои навыки работы на крупных площадках в рамках слаженной съемочной группы.", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
+            { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
+            { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
+            { title: "Че о че", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках короткометражного фильма для Wink. В составе команды работал в качестве камерного оператора.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player", redirect: true },
+            { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "Ренессанс", videoUrl: "#" },
+            { title: "Вкусно так", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Вкусно так", videoUrl: "#" },
+            { title: "SneakerBox", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "SneakerBox", videoUrl: "#" }
         ];
         
         function initializeCarousel(carouselId, prevBtnId, nextBtnId, projects) {
@@ -949,17 +731,7 @@
                 card.className = 'project-card';
                 card.dataset.index = index;
                 const bgImage = project.imageUrl || `https://placehold.co/800x450/1d2a3a/6b7f94?text=${encodeURIComponent(project.imagePlaceholder || project.title)}`;
-                
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="card-background" style="background-image: url('${bgImage}')"></div>
-                        <div class="card-title-container">
-                            <h3 class="card-title">${project.title}</h3>
-                        </div>
-                        <div class="card-shutter card-shutter-left"></div>
-                        <div class="card-shutter card-shutter-right"></div>
-                    </div>
-                `;
+                card.innerHTML = `<div class="card-inner"><div class="card-background" style="background-image: url('${bgImage}')"></div><div class="card-title-container"><h3 class="card-title">${project.title}</h3></div><div class="card-shutter card-shutter-left"></div><div class="card-shutter card-shutter-right"></div></div>`;
                 carousel.appendChild(card);
             });
 
@@ -969,97 +741,44 @@
             cards.forEach(card => {
                 const cardInner = card.querySelector('.card-inner');
                 const strength = 10;
-
-                card.addEventListener('mousemove', (e) => {
-                    if (!card.classList.contains('active')) return;
-                    const rect = card.getBoundingClientRect();
-                    const x = e.offsetX;
-                    const y = e.offsetY;
-                    const rotateY = (x - rect.width / 2) / (rect.width / 2) * strength;
-                    const rotateX = (y - rect.height / 2) / (rect.height / 2) * -strength;
-                    
-                    cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-                });
-
-                card.addEventListener('mouseleave', () => {
-                    cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)';
-                });
+                card.addEventListener('mousemove', (e) => { if (!card.classList.contains('active')) return; const rect = card.getBoundingClientRect(); const x = e.offsetX, y = e.offsetY; const rotateY = (x - rect.width / 2) / (rect.width / 2) * strength; const rotateX = (y - rect.height / 2) / (rect.height / 2) * -strength; cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`; });
+                card.addEventListener('mouseleave', () => { cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
             });
 
             function updateCarousel() {
                 cards.forEach((card, index) => {
-                    card.classList.remove('active', 'prev', 'next', 'prev2', 'next2', 'hidden');
+                    card.className = 'project-card'; // Reset classes
                     let pos = (index - currentIndex + totalCards) % totalCards;
-                    
-                    if (pos === 0) {
-                        card.classList.add('active');
-                    } else if (pos === 1) {
-                        card.classList.add('next');
-                    } else if (pos === 2) {
-                        card.classList.add('next2');
-                    } else if (pos === totalCards - 1) {
-                        card.classList.add('prev');
-                    } else if (pos === totalCards - 2) {
-                        card.classList.add('prev2');
-                    } else {
-                        card.classList.add('hidden');
-                    }
+                    const posMap = { 0: 'active', 1: 'next', 2: 'next2', [totalCards - 1]: 'prev', [totalCards - 2]: 'prev2' };
+                    card.classList.add(posMap[pos] || 'hidden');
                 });
                 findInteractiveElements();
             }
 
-            function navigate(direction) {
-                currentIndex = (currentIndex + direction + totalCards) % totalCards;
-                updateCarousel();
-            }
-
+            function navigate(direction) { currentIndex = (currentIndex + direction + totalCards) % totalCards; updateCarousel(); }
             document.getElementById(nextBtnId).addEventListener('click', () => navigate(1));
             document.getElementById(prevBtnId).addEventListener('click', () => navigate(-1));
             
             carousel.addEventListener('click', (e) => {
                 const card = e.target.closest('.project-card');
                 if (!card) return;
-                
                 const cardIndex = parseInt(card.dataset.index, 10);
                 if (card.classList.contains('active')) {
                     const project = projects[cardIndex];
+                    if (project.redirect) { window.open(project.videoUrl, '_blank'); return; }
                     if (project.videoUrl === "#" && !project.externalLink) return;
 
-                    if (project.redirect) {
-                        window.open(project.videoUrl, '_blank');
-                        return;
-                    }
-
                     let urlToOpen = project.videoUrl;
-                    
-                    if (project.videoUrl.includes('vkvideo.ru/video')) {
-                        const parts = project.videoUrl.split('video')[1].split('?')[0].split('_');
-                        const ownerId = parts[0];
-                        const videoId = parts[1];
-                        if (ownerId && videoId) {
-                            urlToOpen = `https://vk.com/video_ext.php?oid=${ownerId}&id=${videoId}&autoplay=1`;
-                        }
-                    } else if (project.videoUrl.includes('youtu.be/') || project.videoUrl.includes('youtube.com/watch')) {
-                        const videoId = project.videoUrl.includes('youtu.be/') 
-                            ? project.videoUrl.split('/').pop().split('?')[0]
-                            : project.videoUrl.split('v=')[1].split('&')[0];
-                        urlToOpen = `https://www.youtube.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0`;
-                    } else if (project.videoUrl.includes('vimeo.com')) {
-                        const videoId = project.videoUrl.split('/').pop().split('?')[0];
-                        urlToOpen = `https://player.vimeo.com/video/${videoId}?autoplay=1&title=0&byline=0&portrait=0`;
-                    }
+                    if (urlToOpen && urlToOpen.includes('youtu')) { const id = urlToOpen.includes('youtu.be/') ? urlToOpen.split('/').pop().split('?')[0] : urlToOpen.split('v=')[1].split('&')[0]; urlToOpen = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0`; } 
+                    else if (urlToOpen && urlToOpen.includes('vimeo.com')) { const id = urlToOpen.split('/').pop().split('?')[0]; urlToOpen = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`; }
                     
                     openModal(project, card, urlToOpen);
-
                 } else {
                     let diff = cardIndex - currentIndex;
-                    if (Math.abs(diff) > totalCards / 2) {
-                        diff = diff > 0 ? diff - totalCards : diff + totalCards;
-                    }
+                    if (Math.abs(diff) > totalCards / 2) diff = diff > 0 ? diff - totalCards : diff + totalCards;
                     navigate(diff);
                 }
             });
-
             updateCarousel();
         }
 
