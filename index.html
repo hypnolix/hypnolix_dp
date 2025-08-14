@@ -369,7 +369,7 @@
             <a href="#showreel" class="magnetic-button pulsate-on-hover">SHOWREEL</a> 
             <a href="#works" class="magnetic-button pulsate-on-hover">Проекты</a> 
             <a href="#experience" class="magnetic-button pulsate-on-hover">Опыт</a> 
-            <a href="#contact" class="magnetic-button pulsate-on-hover">Контакт</a> 
+            <a href="#contact" class="magnetic-button pulsate-on-hover">Контакты</a> 
         </nav>
     </header>
 
@@ -820,8 +820,8 @@
             stillsImage.src = currentStills[currentStillIndex];
         }
         
-        stillsPrevBtn.addEventListener('click', () => showStill(currentStillIndex - 1));
-        stillsNextBtn.addEventListener('click', () => showStill(currentStillIndex + 1));
+        if(stillsPrevBtn) stillsPrevBtn.addEventListener('click', () => showStill(currentStillIndex - 1));
+        if(stillsNextBtn) stillsNextBtn.addEventListener('click', () => showStill(currentStillIndex + 1));
 
 
         function openModal(project, cardElement, videoSrc) {
@@ -833,9 +833,9 @@
             modalDescription.textContent = project.description;
 
             // Clear previous dynamic content
-            modalLinkContainer.innerHTML = '';
+            if(modalLinkContainer) modalLinkContainer.innerHTML = '';
 
-            if (project.type === 'stills') {
+            if (project.type === 'stills' && modalStillsWrapper) {
                 // Handle stills type
                 modalVideoWrapper.classList.add('hidden');
                 modalStillsWrapper.classList.remove('hidden');
@@ -855,7 +855,7 @@
             } else {
                 // Handle default video type
                 modalVideoWrapper.classList.remove('hidden');
-                modalStillsWrapper.classList.add('hidden');
+                if(modalStillsWrapper) modalStillsWrapper.classList.add('hidden');
                 modalVideo.src = videoSrc;
             }
             
@@ -875,7 +875,7 @@
             stillsImage.src = "";
             currentStills = [];
             currentStillIndex = 0;
-            modalLinkContainer.innerHTML = '';
+            if(modalLinkContainer) modalLinkContainer.innerHTML = '';
             if (lastClickedCard) {
                 lastClickedCard.classList.remove('is-opening-modal');
                 lastClickedCard = null;
@@ -890,7 +890,7 @@
         const mainProjects = [
             { 
                 title: "Закрывай замок на два оборота", 
-                description: "Полный метр. Для просмотра фильма перейдите по ссылке на Кинопоиск.",
+                description: "В этом проекте я вырос от камерамена до второго оператора. Я отвечал за сметы по свету и камере, проводил пре-шуты и предлагал оператору-постановщику схемы света, беря на себя значительную часть его работы.",
                 imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg",
                 type: 'stills',
                 stills: [
@@ -901,32 +901,42 @@
                 externalLink: "https://www.kinopoisk.ru/film/5368457",
                 videoUrl: "#"
             },
-            { title: "Реклама Aikon", description: "Рекламный ролик для бренда Aikon.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", videoUrl: "https://disk.yandex.ru/i/V28Bf8VS9bBBwA" },
-            { title: "Реклама StarLine", description: "Динамичная съемка с использованием роборуки.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
-            { title: "Beluga", description: "Серия Reels для европейского рынка.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
-            { title: "Di Caspico", description: "Яркий и сочный рекламный ролик.", imageUrl: "https://i.postimg.cc/bJQxwMwx/2025-08-12-21-31-37.jpg", videoUrl: "https://vimeo.com/852620995" },
-            { title: "Bardakk - Zavtra (snipet)", description: "Снипет музыкального клипа.", imageUrl: "https://i.postimg.cc/3JZtBy7X/2025-06-25-13-42-55.jpg", videoUrl: "https://youtu.be/bzIPTj6eoOk" },
-            { title: "Jony VTB Arena", description: "Концертная съемка.", imageUrl: "https://i.postimg.cc/0NBvnWfR/jhn.jpg", videoUrl: "https://vimeo.com/896531109" },
-            { title: "The Story", description: "Описание проекта The Story.", imageUrl: "https://i.postimg.cc/c1PWSb89/2025-08-12-21-09-06.jpg", videoUrl: "https://vimeo.com/1028864286" },
-            { title: "Davlatova - Напоминало (снипет)", description: "Снипет музыкального клипа.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
+            { 
+                title: "Реклама Aikon", 
+                description: "Игровая реклама, где мне не понравилась финальная цветокоррекция. Я перекрасил часть кадров, чтобы показать свое видение.", 
+                imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", 
+                type: 'stills',
+                stills: [
+                    'https://placehold.co/1280x720/050508/ffffff?text=Still+1',
+                    'https://placehold.co/1280x720/050508/ffffff?text=Still+2',
+                ],
+                videoUrl: "https://disk.yandex.ru/i/V28Bf8VS9bBBwA" 
+            },
+            { title: "Реклама StarLine", description: "В этом проекте я совмещал роли режиссера и оператора, получив ценный опыт работы с роборукой. Несмотря на разногласия с клиентом, я оставил версию монтажа, близкую к изначальной задумке.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
+            { title: "Beluga", description: "Мой первый опыт работы с крупным европейским брендом. Проект был связан строгим NDA на 250 000€.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
+            { title: "Егор Шип, Никита Кунов, Derouse", description: "Сложная, но невероятно интересная 27-часовая смена. Мы построили сцену на мусорной свалке и успешно решали все возникающие проблемы, что стало отличной проверкой профессионализма.", imageUrl: "https://i.postimg.cc/7hTvY0jF/2025-03-18-10-19-50.jpg", videoUrl: "https://www.youtube.com/watch?v=ewnrSaozgdI" },
+            { title: "Bardakk & Privetallog - Дело времени", description: "Творческий клип, в котором я экспериментировал с цветом и изображением, чтобы добиться стильного 'film look'. Результатом я очень доволен.", imageUrl: "https://i.postimg.cc/FHVX0FC8/2025-08-12-21-11-38.jpg", videoUrl: "https://youtu.be/V_kQFygdvKQ" },
+            { title: "Jony VTB Arena", description: "Опыт работы оператором-постановщиком на большом концерте. Получилось сильное и классное видео, которое я до сих пор с удовольствием пересматриваю.", imageUrl: "https://i.postimg.cc/0NBvnWfR/jhn.jpg", videoUrl: "https://vimeo.com/896531109" },
+            { title: "The Story", description: "Проект, снятый в театре с реальной балериной. Мы проводили параллель между ее внутренним миром и натурой, создавая глубокую визуальную метафору.", imageUrl: "https://i.postimg.cc/c1PWSb89/2025-08-12-21-09-06.jpg", videoUrl: "https://vimeo.com/1028864286" },
+            { title: "Davlatova - Напоминало (снипет)", description: "Творческая работа, в которой я экспериментировал с изображением, чтобы создать красивую и мрачную хоррор-атмосферу.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
             { title: "Liriana - Если не любовь", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" },
-            { title: "Litmanovich", description: "Описание проекта Litmanovich.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731" },
+            { title: "Litmanovich", description: "Один из первых клипов, снятый для друга. Это было начало моего пути, и в нем есть как удачные моменты, так и те, что стали ценным уроком.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731" },
             { title: "Queen of the Night", description: "Экспериментальная творческая работа.", imageUrl: "https://i.postimg.cc/9Mr33dXH/2025-08-12-21-19-12.jpg", videoUrl: "https://vimeo.com/894197378" },
-             { title: "Bardakk & Privetallog - Дело времени", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/FHVX0FC8/2025-08-12-21-11-38.jpg", videoUrl: "#" },
         ];
         const experienceProjects = [
             { 
                 title: "ТНТ Премьер & Пушкинский музей", 
-                description: "Съемки для проекта 'Личная коллекция'.", 
+                description: "Съемки для проекта 'Личная коллекция'. Я работал в качестве B-cam и оператора ручной камеры.", 
                 imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", 
                 videoUrl: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", 
                 redirect: true 
             },
-            { title: "Yandex Lavka spec", description: "Спецпроект для Яндекс.Лавки.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
-            { title: "Lime - fashion spec ads", description: "Спек реклама для бренда Lime.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
+            { title: "Yandex Lavka spec", description: "Спецпроект для Яндекс.Лавки. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
+            { title: "Lime - fashion spec ads", description: "Спек реклама для бренда Lime. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
             { title: "Че о че", description: "Короткометражка на Wink, на которой я был камераменом.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
-            { title: "Вкусно так", description: "Рекламный ролик, работа в качестве камерамена.", imagePlaceholder: "Вкусно так", videoUrl: "#" },
-            { title: "SneakerBox", description: "Рекламный ролик, работа в качестве камерамена.", imagePlaceholder: "SneakerBox", videoUrl: "#" },
+            { title: "Ренессанс кредит", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Ренессанс", videoUrl: "#" },
+            { title: "Вкусно так", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Вкусно так", videoUrl: "#" },
+            { title: "SneakerBox", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "SneakerBox", videoUrl: "#" },
         ];
         
         function initializeCarousel(carouselId, prevBtnId, nextBtnId, projects) {
@@ -1059,4 +1069,3 @@
     </script>
 </body>
 </html>
-
