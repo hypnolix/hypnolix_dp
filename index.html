@@ -376,10 +376,10 @@
     <header id="header" class="header">
         <div class="logo"> <a href="#hero" class="pulsate">hypnolix</a> </div>
         <nav class="hidden md:block"> 
-            <a href="#about" class="magnetic-button pulsate-on-hover">Обо мне</a> 
             <a href="#showreel" class="magnetic-button pulsate-on-hover">SHOWREEL</a> 
             <a href="#works" class="magnetic-button pulsate-on-hover">Проекты</a> 
             <a href="#experience" class="magnetic-button pulsate-on-hover">Опыт</a> 
+            <a href="#about" class="magnetic-button pulsate-on-hover">Обо мне</a> 
             <a href="#contact" class="magnetic-button pulsate-on-hover">Контакты</a> 
         </nav>
     </header>
@@ -391,23 +391,15 @@
                 <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tight liquid-text">Сергей Иванов</h1>
                 <p class="mt-4 text-lg md:text-2xl font-light" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Оператор-постановщик</p>
             </div>
-            <a href="#about" class="scroll-down-arrow"> <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg> </a>
+            <a href="#photo-section" class="scroll-down-arrow"> <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg> </a>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="section">
+        <!-- Photo Section -->
+        <section id="photo-section" class="section" style="min-height: auto; padding-top: 4rem; padding-bottom: 8rem;">
             <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
-                <h2 class="text-4xl md:text-5xl mb-12 text-center section-title">Обо мне</h2>
-                <div class="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-                    <div class="w-full max-w-[250px] md:max-w-none md:w-1/3 flex-shrink-0">
-                        <div class="aspect-square rounded-full flex items-center justify-center overflow-hidden shadow-2xl" style="border: 2px solid rgba(255, 255, 255, 0.1);">
-                            <img src="https://i.postimg.cc/BvHY2jVG/IMG-2726.jpg" alt="[Фото Сергея Иванова]" class="object-cover w-full h-full" onerror="this.onerror=null;this.src='https://placehold.co/400x400/111827/374151?text=Фото';">
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 text-center md:text-left">
-                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed">Уже 10 лет я создаю визуальные истории. С 2015 года, когда в мои руки впервые попала камера, я живу этим делом. Для меня это не просто работа, а настоящая страсть. Я фанат своего дела, одержимый вниманием к деталям и постоянно экспериментирующий с цветом и светом, чтобы найти идеальный кадр.
-                        <br><br>
-                        Моя цель — не просто фиксировать реальность, а преображать её, создавая уникальные визуальные миры, которые рассказывают истории и вызывают глубокие эмоции. Каждый проект — это возможность найти красоту в обыденном и передать её зрителю через призму моего видения.</p>
+                <div class="w-full max-w-4xl mx-auto">
+                    <div class="aspect-video rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl p-1 bg-white/5">
+                         <img src="https://i.postimg.cc/7ZCskyB4/2024-12-16-23-35-02.png" alt="[Фото Сергея Иванова]" class="object-cover w-full h-full rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/111827/374151?text=Фото';">
                     </div>
                 </div>
             </div>
@@ -425,7 +417,8 @@
         <section id="works" class="section">
             <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Избранные проекты</h2>
-                <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-4">Ключевые проекты, где я выступил в роли оператора-постановщика. Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
+                <p class="text-lg max-w-3xl mx-auto mb-2">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
+                <p class="text-base max-w-3xl mx-auto mb-8" style="color: #E57373;">Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
                 <p class="font-bold text-yellow-400 max-w-3xl mx-auto mb-12">Для просмотра некоторых проектов может потребоваться VPN.</p>
                 <div class="relative w-full">
                     <div id="main-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
@@ -452,28 +445,14 @@
             </div>
         </section>
         
-        <!-- Backstage Section -->
-        <section id="backstage" class="section" style="min-height: auto; padding-top: 8rem; padding-bottom: 8rem;">
-            <div class="content-container max-w-4xl mx-auto text-center reveal-on-scroll">
-                <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Backstage & Доп. опыт</h2>
-                <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-10">В начале своей операторской карьеры я много работал в качестве бэкстейдж-оператора. Этот опыт позволил мне изнутри изучить съемочный процесс на крупных проектах, помогая продюсерам и перенимая знания у старших коллег. Я наблюдал за тем, как работают профессионалы, что заложило прочный фундамент для моего дальнейшего роста.</p>
-                <div class="text-left max-w-2xl mx-auto glass-effect rounded-2xl p-6 sm:p-8">
-                    <h3 class="font-semibold text-xl text-white mb-4">Проекты (Backstage):</h3>
-                    <ul class="space-y-3 text-gray-300">
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Anihu - Aicon</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Егор Крид - We Gotta Get Love</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Егор Крид & Михаил Шуфутинский - 3-е сентября</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Jony - Никак</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Милана & Дава - Купи пёсика</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Полина Гагарина - Бабочки в животе</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Jony Тизеры к альбому</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Nelly Armani - Я искусство</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Натан & Слава - Ой все</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Итоги 2022 года</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Егор Крид & Og Buda - плачут небеса</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Люся Чеботина - Командир</span> </li>
-                        <li class="flex items-start"> <svg class="w-5 h-5 text-indigo-400 mr-3 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span>Dj Smash & Poet - сновогодняя</span> </li>
-                    </ul>
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl mb-12 text-center section-title">Обо мне</h2>
+                <div class="w-full md:w-2/3 mx-auto text-center">
+                     <p class="text-lg md:text-xl text-gray-300 leading-relaxed">Будучи ребёнком, я увлёкся съемкой музыкальных клипов, а потом полюбил кино. Сейчас я воплощаю свою детскую мечту — это то, чем я горю и чем хотел бы заниматься всю жизнь.
+                     <br><br>
+                     Для меня это не просто работа, а настоящая страсть. Моя цель — не просто фиксировать реальность, а преображать её, создавая уникальные визуальные миры, которые рассказывают истории и вызывают глубокие эмоции. Каждый проект — это возможность найти красоту в обыденном и передать её зрителю через призму моего видения.</p>
                 </div>
             </div>
         </section>
@@ -736,7 +715,7 @@
 
         // --- Carousel Data and Initialization ---
         const mainProjects = [
-            { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/v8LVqfp2/2025-08-14-22-29-08.jpg', 'https://i.postimg.cc/Vv1bskbF/2025-08-14-22-43-03.jpg', 'https://i.postimg.cc/Xq8Br6f6/2025-08-14-22-43-45.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
+            { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Так уж случилось, что на самой важной и дорогой смене, оператор постановщик попал в больницу и я взял на себя его обязанности, и успешно с ними спраился.  Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/rpw15BHb/2025-08-21-14-36-54.jpg', 'https://i.postimg.cc/VLXWwBM7/2025-08-21-14-46-12.jpg', 'https://i.postimg.cc/Hsn3wg1M/2025-08-22-20-29-14.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
             { title: 'Реклама для "aikon"', role: "Оператор-постановщик", description: "Игровая реклама для бренда aikon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", videoUrl: "https://disk.yandex.ru/i/V28Bf8VS9bBBwA" },
             { title: 'Проморолик для "StarLine"', role: "Режиссер, Оператор-постановщик", description: "В этом проекте я совмещал роли режиссера и оператора, работая со сложным оборудованием — роботизированной рукой (Robotic Arm). Здесь представлена моя авторская версия монтажа, наиболее полно отражающая оригинальный художественный замысел.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
             { title: 'Рилс для "Beluga"', role: "Оператор-постановщик", description: "Проект для международного премиум-бренда Beluga, ставший моим первым опытом работы на европейском рынке. Участвовал в создании визуального контента в рамках высокобюджетной кампании (проект с подписанным NDA на сумму €250,000). Этот опыт подтверждает мое умение работать по высоким стандартам и соответствовать требованиям крупных мировых брендов.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
@@ -833,4 +812,3 @@
     </script>
 </body>
 </html>
-
