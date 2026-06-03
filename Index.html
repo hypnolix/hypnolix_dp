@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сергей Иванов - Оператор-постановщик</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* General styles for smooth scrolling and base layout */
+        html, body {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #050508;
+            color: #E5E7EB;
+            position: relative;
+        }
+        
+        /* Canvas for interactive background */
+        #interactive-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Tilt-shift effect overlay on scroll */
+        .tilt-shift-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        .tilt-shift-overlay::before,
+        .tilt-shift-overlay::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
+        }
+        .tilt-shift-overlay::before {
+            top: 0;
+            mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+        }
+        .tilt-shift-overlay::after {
+            bottom: 0;
+            mask-image: linear-gradient(to top, black 0%, transparent 100%);
+        }
+        body.scrolled .tilt-shift-overlay {
+            opacity: 1;
+        }
+
+        /* Preloader styles */
+        #preloader {
+            position: fixed; inset: 0; background-color: #000000;
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease-in-out 0.5s, visibility 0.8s 0.5s;
+            visibility: visible; opacity: 1; font-family: 'Roboto Mono', monospace;
+            color: #E5E7EB; padding: 1rem;
+        }
+        #preloader.is-loaded { opacity: 0; visibility: hidden; pointer-events: none; }
+        #alexa-playback-ui { width: 100%; height: 100%; position: relative; display: flex; justify-content: center; align-items: center; background-color: #000; }
+        .playback-main-view { width: 100%; aspect-ratio: 16 / 9; max-width: 90vh; border: 1px solid rgba(255, 255, 255, 0.2); background-color: #050508; position: relative; }
+        .playback-info { position: absolute; font-size: clamp(0.6rem, 1vw, 0.8rem); display: flex; gap: 0.75rem; padding: 0.75rem; }
+        .playback-info-top-left { top: 0; left: 0; }
+        .playback-info-top-right { top: 0; right: 0; }
+        .playback-info-bottom-center { 
+            bottom: 0; 
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+        .bottom-info-group { display: flex; gap: 0.75rem; align-items: center; }
+
+        .info-block { background: rgba(10, 10, 12, 0.7); padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+        .status-indicator { font-weight: 700; padding: 4px 8px; border-radius: 4px; transition: all 0.3s; font-size: clamp(0.8rem, 1.2vw, 1rem); }
+        .status-standby { color: #39FF14; border: 1px solid #39FF14; }
+        .status-rec { background-color: #FF0000; color: #000000; border: 1px solid #FF0000; }
+
+        /* Header styles */
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 1.5rem 2rem; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s, backdrop-filter 0.3s;
+        }
+        .header-scrolled { background-color: rgba(10, 15, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .header .logo a { font-size: 1.75rem; font-weight: 800; color: #FFFFFF; letter-spacing: -1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+        
+        /* Pulsating animation for logo and buttons */
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
+            100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+        }
+        .pulsate {
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+        .pulsate-on-hover:hover {
+            animation: pulse 2.5s infinite ease-in-out;
+        }
+
+        /* Pulsating glow for contact buttons */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 18px rgba(91, 149, 187, 0.4), 0 0 35px rgba(91, 149, 187, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.05); }
+            50% { box-shadow: 0 0 25px rgba(91, 149, 187, 0.7), 0 0 50px rgba(91, 149, 187, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.05); }
+            100% { box-shadow: 0 0 18px rgba(91, 149, 187, 0.4), 0 0 35px rgba(91, 149, 187, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.05); }
+        }
+        
+        /* Navigation link styles (Liquid Glass / Magnetic) */
+        .header nav a { 
+            color: #D1D5DB; margin-left: 0.5rem; font-weight: 500; 
+            transition: color 0.3s, text-shadow 0.3s, transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+                        background 0.3s, border 0.3s, box-shadow 0.3s, backdrop-filter 0.3s; 
+            padding: 10px 16px; border-radius: 99px; 
+            will-change: transform;
+            display: inline-block;
+            border: 1px solid transparent;
+        }
+        .header nav a:hover { 
+            color: #FFFFFF; 
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); 
+            background: rgba(44, 62, 80, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Section layout */
+        .section {
+            min-height: 100vh; width: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; padding: 8rem 1rem; z-index: 1;
+        }
+        #hero { padding: 6rem 1rem 4rem; }
+
+        .content-container { position: relative; z-index: 2; text-align: center; color: white; width: 100%; }
+        
+        /* Special text styles */
+        .liquid-text { 
+            font-weight: 700; 
+            background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.6) 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+        .section-title { font-weight: 700; color: #FFFFFF; text-shadow: 0 0 20px rgba(255, 255, 255, 0.15); }
+        
+        /* Reveal on scroll animation */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            will-change: opacity, transform;
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll down arrow animation */
+        .scroll-down-arrow { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); z-index: 2; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); } 40% { transform: translateX(-50%) translateY(-20px); } 60% { transform: translateX(-50%) translateY(-10px); } }
+
+        /* Carousel styles */
+        .carousel-container { position: relative; width: 100%; perspective: 1800px; }
+        
+        .project-card { 
+            position: absolute; 
+            width: 90vw; max-width: 550px; 
+            aspect-ratio: 16 / 9;
+            border-radius: 1.25rem; 
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s, filter 0.6s, box-shadow 0.5s ease; 
+            cursor: pointer; overflow: hidden; 
+            background-color: rgba(28, 38, 50, 0.5);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            transform-style: preserve-3d;
+        }
+        .project-card:hover {
+            box-shadow: 0 0 18px rgba(91, 149, 187, 0.4), 0 0 35px rgba(91, 149, 187, 0.25), 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(20, 20, 20, 0.5);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+        .card-inner {
+            width: 100%; height: 100%;
+            position: relative;
+            transition: transform 0.4s ease-out;
+            transform-style: preserve-3d;
+            overflow: hidden;
+        }
+
+        /* Desktop Carousel Transforms */
+        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; }
+        .project-card.prev { transform: translateX(-50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
+        .project-card.next { transform: translateX(50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
+        .project-card.prev2 { transform: translateX(-90%) translateZ(-400px) scale(0.7); opacity: 0.2; filter: blur(6px); z-index: 1; }
+        .project-card.next2 { transform: translateX(90%) translateZ(-400px) scale(0.7); opacity: 0.2; filter: blur(6px); z-index: 1; }
+        .project-card.hidden { transform: scale(0.5); opacity: 0; filter: blur(10px); z-index: 0; }
+        
+        /* Mobile Carousel Transforms */
+        @media (max-width: 1024px) {
+            .project-card.prev { transform: translateX(-45%) translateZ(-150px) scale(0.8); }
+            .project-card.next { transform: translateX(45%) translateZ(-150px) scale(0.8); }
+            .project-card.prev2, .project-card.next2, .project-card.hidden { transform: scale(0.7); opacity: 0; filter: blur(8px); }
+        }
+
+        .card-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            transition: transform 0.5s ease;
+        }
+        .project-card:hover .card-background {
+            transform: scale(1.05);
+        }
+        .card-title-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.2s;
+            transform: translateZ(50px);
+            pointer-events: none;
+        }
+        .project-card.is-opening-modal .card-title-container {
+            opacity: 0 !important;
+            transition: opacity 0.2s ease !important;
+        }
+        .project-card:hover .card-title-container {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .card-title {
+            font-size: clamp(1.5rem, 4vw, 2.5rem); 
+            font-weight: 700; color: #FFFFFF;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+            padding: 0 1rem;
+        }
+        .card-shutter {
+            position: absolute; top: 0; height: 100%; width: 50.5%;
+            background-color: rgba(5, 5, 8, 0.8);
+            -webkit-backdrop-filter: blur(2px);
+            backdrop-filter: blur(2px);
+            transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+            z-index: 2;
+        }
+        .card-shutter-left { left: 0; }
+        .card-shutter-right { right: 0; }
+        .project-card:hover .card-shutter-left { transform: translateX(-100%); }
+        .project-card:hover .card-shutter-right { transform: translateX(100%); }
+
+        .nav-button { position: absolute; top: 50%; transform: translateY(-50%); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; z-index: 20; display: flex; justify-content: center; align-items: center; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .nav-button:hover { box-shadow: 0 0 20px rgba(173, 216, 230, 0.2); }
+        
+        /* Modal styles */
+        .modal-overlay { position: fixed; inset: 0; z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; background-color: rgba(0, 0, 0, 0.0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s; }
+        .modal-overlay.is-visible { opacity: 1; visibility: visible; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .modal-content { width: 100%; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; border-radius: 1.5rem; box-shadow: 0 0 30px rgba(91, 149, 187, 0.2), 0 0 60px rgba(70, 99, 127, 0.15); opacity: 0; will-change: transform, opacity; transform-origin: center center; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-out; }
+        .modal-overlay.is-visible .modal-content { opacity: 1; }
+        .modal-header { padding: 1rem 1.5rem; flex-shrink: 0; display: flex; justify-content: flex-end; align-items: center; }
+        .modal-close-btn { background-color: rgba(255, 255, 255, 0.1); color: #9CA3AF; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; transition: background-color 0.3s, color 0.3s; }
+        .modal-close-btn:hover { background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
+        .modal-body { padding: 0 1rem 1.5rem; overflow-y: auto; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        .modal-video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background-color: #000; border-radius: 1rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .modal-video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        #modal-title { font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem; }
+        #modal-description { font-size: 1rem; color: #D1D5DB; line-height: 1.7; }
+        @media (min-width: 1024px) { 
+            .modal-body { grid-template-columns: 5fr 4fr; align-items: center; padding: 0 2rem 2rem; }
+            #modal-title { font-size: 1.75rem; }
+        }
+        
+        /* Showreel section */
+        #showreel { min-height: auto; padding: 12rem 1rem; }
+        #showreel .content-container { padding-left: 1rem; padding-right: 1rem; }
+        .showreel-player-container { display: block; width: 100%; max-width: 1152px; margin: 2rem auto 0; aspect-ratio: 16 / 9; border-radius: 1.5rem; position: relative; transition: transform 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 0 12px rgba(91, 149, 187, 0.3), 0 0 25px rgba(91, 149, 187, 0.2), 0 0 50px rgba(70, 99, 127, 0.15), inset 0 0 10px rgba(20, 20, 20, 0.5); }
+        .showreel-player-container:hover { transform: scale(1.02); box-shadow: 0 0 18px rgba(91, 149, 187, 0.5), 0 0 40px rgba(91, 149, 187, 0.35), 0 0 80px rgba(70, 99, 127, 0.25), inset 0 0 10px rgba(20, 20, 20, 0.5); }
+        .showreel-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1.5rem; }
+        
+        /* Contact button styles */
+        .contact-button-wrapper { position: relative; }
+        .contact-button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+            font-weight: 600; padding: 1rem 2rem; border-radius: 9999px; text-align: center;
+            color: #E5E7EB; background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
+            transition: color 0.3s, text-shadow 0.3s, transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), background 0.3s, border 0.3s, box-shadow 0.3s;
+            will-change: transform;
+        }
+        .contact-button:hover {
+            color: #FFFFFF; background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.3);
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        .contact-button svg { width: 24px; height: 24px; }
+
+        /* Final Responsive Overrides */
+        @media (max-width: 768px) { 
+            .header { padding: 1rem; } 
+            .header .logo a { font-size: 1.5rem; } 
+            .section { padding: 5rem 1rem 3rem; } 
+            #showreel { padding: 8rem 1rem; } 
+        }
+        @media (orientation: portrait) { .playback-main-view { width: 90vw; max-width: none; max-height: 90vw; } }
+        
+        /* Preloader mobile adjustments */
+        @media (max-width: 420px) {
+            .playback-info-bottom-center {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 4px 8px;
+                padding-bottom: 4px;
+            }
+            .playback-info .info-block, .playback-info .status-indicator {
+                font-size: 0.6rem;
+                padding: 3px 5px;
+            }
+             .playback-info {
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div id="alexa-playback-ui">
+            <div class="playback-main-view">
+                <div class="playback-info playback-info-top-left"> <div class="info-block">FPS: 25.000</div> <div class="info-block">SHUTTER: 180.0&deg;</div> </div>
+                <div class="playback-info playback-info-top-right"> <div class="info-block">EI: 800</div> <div class="info-block">WB: 5600K</div> </div>
+                <div class="playback-info playback-info-bottom-center">
+                    <div class="bottom-info-group">
+                        <div class="info-block">BAT: 28.2V</div>
+                    </div>
+                    <div class="bottom-info-group">
+                        <div class="info-block">I008 S002</div> 
+                        <div id="rec-status" class="status-indicator">STBY</div> 
+                        <div class="info-block">CARD: 0:21h</div>
+                    </div>
+                    <div class="bottom-info-group">
+                        <div id="timecode" class="info-block">TC 02:00:03:17</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive background and overlays -->
+    <canvas id="interactive-bg-canvas"></canvas>
+    <div class="tilt-shift-overlay"></div>
+
+    <!-- Header with Navigation -->
+    <header id="header" class="header">
+        <div class="logo"> <a href="#hero" class="pulsate">IS DP</a> </div>
+        <nav class="hidden md:block"> 
+            <a href="#showreel" class="magnetic-button pulsate-on-hover">SHOWREEL</a> 
+            <a href="#works" class="magnetic-button pulsate-on-hover">Проекты</a> 
+            <a href="#experience" class="magnetic-button pulsate-on-hover">Опыт</a> 
+            <a href="#about" class="magnetic-button pulsate-on-hover">Обо мне</a> 
+            <a href="#contact" class="magnetic-button pulsate-on-hover">Контакты</a> 
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="section h-screen">
+            <div class="content-container">
+                <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tight liquid-text">Иванов Сергей</h1>
+                <p class="mt-4 text-lg md:text-2xl font-light" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Оператор-постановщик</p>
+            </div>
+            <a href="#photo-section" class="scroll-down-arrow"> <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg> </a>
+        </section>
+
+        <!-- Photo Section -->
+        <section id="photo-section" class="section" style="min-height: auto; padding-top: 4rem; padding-bottom: 8rem;">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <div class="w-full max-w-4xl mx-auto">
+                    <div class="aspect-video rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl p-1 bg-white/5">
+                         <img src="https://i.postimg.cc/7ZCskyB4/2024-12-16-23-35-02.png" alt="[Фото Иванова Сергея]" class="object-cover w-full h-full rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/111827/374151?text=Фото';">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Showreel Section -->
+        <section id="showreel" class="section">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl sm:text-5xl md:text-7xl tracking-tight text-center liquid-text">SHOWREEL</h2>
+                <div class="showreel-player-container"> <iframe src="https://player.vimeo.com/video/1084894000?title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe> </div>
+            </div>
+        </section>
+
+        <!-- Works Section -->
+        <section id="works" class="section">
+            <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Избранные проекты</h2>
+                <p class="text-lg max-w-3xl mx-auto mb-2 text-white">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
+                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
+                <p class="font-bold text-yellow-400 max-w-3xl mx-auto mb-12">Для просмотра некоторых проектов может потребоваться VPN.</p>
+                <div class="relative w-full">
+                    <div id="main-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
+                        <!-- Cards will be injected by JS -->
+                    </div>
+                    <button id="main-prev-btn" class="nav-button left-0 sm:left-2 lg:left-8">&lt;</button>
+                    <button id="main-next-btn" class="nav-button right-0 sm:right-2 lg:right-8">&gt;</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="section">
+            <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Опыт работы на площадке</h2>
+                <p class="text-lg text-gray-400 max-w-3xl mx-auto mb-12">Проекты, где я работал в качестве камерамена в составе большой съемочной группы.</p>
+                <div class="relative w-full">
+                    <div id="experience-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
+                        <!-- Cards will be injected by JS -->
+                    </div>
+                    <button id="exp-prev-btn" class="nav-button left-0 sm:left-2 lg:left-8">&lt;</button>
+                    <button id="exp-next-btn" class="nav-button right-0 sm:right-2 lg:right-8">&gt;</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl md:text-5xl mb-12 text-center section-title">Обо мне</h2>
+                <div class="w-full md:w-2/3 mx-auto text-center">
+                     <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
+                        Я очень люблю снимать. Эта история началась еще в детстве, с первых видео на YouTube, когда мы с другом начали этим заниматься, когда делали каверы на музыкальные клипы. С тех пор мечта стать оператором-постановщиком стала моей главной целью.
+                        <br><br>
+                        Я из тех, кто может часами смотреть фильмы и клипы, наблюдая за историей, светом, движением камеры и композицией и восхищаться результатом. У меня нет сомнений что это мое и что я хочу заниматься именно этим. 
+                        <br><br>
+                        Я укомплектованная боевая единица со своей командой. Дружу с ренталами, есть сработанные гафера, 1st AC. Очень вынослив и стрессоустойчив, могу находит решения в моменте, но предпочитаю заранее досконально готовиться к сменам чтобы ускорить процесс. Вовлечен в процесс и отдаюсь на 101%, даже если придется пробегать все 12 часов с изиригом.
+                     </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="content-container text-center reveal-on-scroll max-w-3xl mx-auto">
+                <h2 class="text-4xl md:text-5xl section-title">Свяжитесь со мной</h2>
+                <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-300">Я всегда открыт для новых проектов и коллабораций. Давайте создадим что-то невероятное вместе. Выберите удобный для вас способ связи.</p>
+                
+                <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8">
+                    <div class="contact-button-wrapper">
+                        <a href="mailto:me@hypnolix.ru" class="contact-button magnetic-button-contact w-full sm:w-auto">Связаться по почте</a>
+                    </div>
+                    <div class="contact-button-wrapper">
+                        <a href="https://t.me/hypnolix" target="_blank" class="contact-button magnetic-button-contact w-full sm:w-auto">
+                            <span>Написать в</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-1.37.2-1.64l16.46-6.1c.89-.32 1.68.28 1.43 1.48l-3.2 14.22c-.24 1.15-1.21 1.42-2.03.83l-4.52-3.37-2.14 2.05c-.23.22-.42.41-.69.41z"/></svg>
+                        </a>
+                    </div>
+                    <div class="contact-button-wrapper">
+                        <a href="https://instagram.com/hypnolix_dp" target="_blank" class="contact-button magnetic-button-contact w-full sm:w-auto">
+                            <span>Написать в</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="text-center py-8 px-4">
+        <p class="text-xs text-gray-600">Every element and technique on this site was crafted from a love for detail, reflecting a piece of my soul. by IS DP © 2026</p>
+    </footer>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal-overlay">
+        <div id="modal-content" class="modal-content glass-effect">
+            <div class="modal-header"> <button id="modal-close-btn" class="modal-close-btn">&times;</button> </div>
+            <div class="modal-body">
+                <div class="modal-video-wrapper">
+                    <iframe id="modal-video" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div id="modal-stills-wrapper" class="hidden">
+                         <div id="modal-stills-gallery" class="relative w-full aspect-video bg-black/50 rounded-lg">
+                             <img id="stills-image" src="" alt="Still from project" class="w-full h-full object-contain rounded-lg">
+                             <button id="stills-prev-btn" class="absolute top-1/2 left-4 -translate-y-1/2 nav-button">&lt;</button>
+                             <button id="stills-next-btn" class="absolute top-1/2 right-4 -translate-y-1/2 nav-button">&gt;</button>
+                         </div>
+                </div>
+                <div class="modal-text-content">
+                    <h3 id="modal-title" class="section-title"></h3>
+                    <p id="modal-description"></p>
+                    <div id="modal-link-container" class="mt-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // --- Preloader Logic ---
+        const preloader = document.getElementById('preloader');
+        if (preloader) {
+            const recStatus = document.getElementById('rec-status');
+            const timecodeEl = document.getElementById('timecode');
+            let tcInterval;
+            function formatTime(d) { return d.toString().padStart(2, '0'); }
+            recStatus.classList.add('status-standby');
+            recStatus.textContent = 'STBY';
+            let frame = 17;
+            const standbyInterval = setInterval(() => { 
+                frame = (frame + 1) % 25; 
+                timecodeEl.textContent = `TC 02:00:03:${String(frame).padStart(2, '0')}`; 
+            }, 80);
+            window.onload = () => {
+                clearInterval(standbyInterval);
+                recStatus.classList.remove('status-standby');
+                recStatus.classList.add('status-rec');
+                recStatus.textContent = 'REC';
+                let s = 3, m = 0, h = 2, f = 17;
+                tcInterval = setInterval(() => { f++; if (f >= 25) { f = 0; s++; } if (s >= 60) { s = 0; m++; } if (m >= 60) { m = 0; h++; } if (h >= 24) { h = 0; } timecodeEl.textContent = `TC ${formatTime(h)}:${formatTime(m)}:${formatTime(s)}:${formatTime(f)}`; }, 40);
+                setTimeout(() => {
+                    preloader.classList.add('is-loaded');
+                    document.body.style.overflow = '';
+                }, 800);
+            };
+        } else {
+             document.body.style.overflow = '';
+        }
+
+        // --- Debounce function to limit resize event calls ---
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        // --- Interactive Background Canvas Logic ---
+        const canvas = document.getElementById('interactive-bg-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let clouds = [], stars = [], shootingStars = [], interactiveElements = [];
+            let animationFrameId;
+            const mouse = { x: 0, y: 0 }, targetMouse = { x: 0, y: 0 };
+            const parallaxIntensity = 35;
+
+            window.addEventListener('mousemove', (e) => {
+                targetMouse.x = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+                targetMouse.y = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+            });
+
+            class Star {
+                constructor(w, h) { this.x = Math.random() * w; this.y = Math.random() * h; this.radius = Math.random() * 1.2 + 0.5; this.baseAlpha = Math.random() * 0.6 + 0.2; this.alpha = 0; this.phase = Math.random() * Math.PI * 2; this.twinkleSpeed = Math.random() * 0.002 + 0.001; this.depth = Math.random() * 0.6 + 0.1; }
+                update() { this.phase += this.twinkleSpeed; this.alpha = this.baseAlpha * (Math.sin(this.phase) * 0.5 + 0.5); }
+                draw(ctx) { if (this.alpha <= 0.01) return; const offX = mouse.x * parallaxIntensity * this.depth; const offY = mouse.y * parallaxIntensity * this.depth; ctx.beginPath(); ctx.arc(this.x + offX, this.y + offY, this.radius, 0, Math.PI * 2); ctx.fillStyle = `rgba(230, 230, 255, ${this.alpha})`; ctx.fill(); }
+            }
+
+            class ShootingStar {
+                constructor(w, h) { this.reset(w, h); }
+                reset(w, h) { this.active = false; this.waitTime = Date.now() + Math.random() * 8000 + 5000; this.x = Math.random() * w * 1.5 - (w * 0.25); this.y = Math.random() * h * 0.5; this.len = Math.random() * 150 + 50; this.speed = Math.random() * 8 + 8; this.size = Math.random() * 1.2 + 0.3; this.angle = Math.PI * 0.15; }
+                update(w, h) { if (this.active) { this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; if (this.x - this.len > w || this.y - this.len > h) this.reset(w, h); } else if (Date.now() > this.waitTime) { this.active = true; } }
+                draw(ctx) { if (!this.active) return; const tailX = this.x - Math.cos(this.angle) * this.len; const tailY = this.y - Math.sin(this.angle) * this.len; ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(tailX, tailY); ctx.lineWidth = this.size; const grad = ctx.createLinearGradient(this.x, this.y, tailX, tailY); grad.addColorStop(0, "rgba(255, 255, 255, 0.6)"); grad.addColorStop(1, "rgba(255, 255, 255, 0)"); ctx.strokeStyle = grad; ctx.stroke(); }
+            }
+
+            class Cloud {
+                constructor(w, h) { this.w = w; this.h = h; this.x = Math.random() * w; this.y = Math.random() * h; this.driftX = (Math.random() - 0.5) * 0.4; this.driftY = (Math.random() - 0.5) * 0.4; this.vx = this.driftX; this.vy = this.driftY; this.size = Math.random() * 350 + 250; this.baseAlpha = Math.random() * 0.12 + 0.1; this.alpha = 0; this.phase = Math.random() * Math.PI * 2; }
+                update() { let tVX = this.driftX, tVY = this.driftY; for (const el of interactiveElements) { const dx = this.x - el.cx, dy = this.y - el.cy, dist = Math.sqrt(dx * dx + dy * dy), repelR = el.radius + this.size * 0.4; if (dist < repelR) { const force = 1 - (dist / repelR), angle = Math.atan2(dy, dx); tVX += Math.cos(angle) * force * 7.5; tVY += Math.sin(angle) * force * 7.5; } } this.vx += (tVX - this.vx) * 0.12; this.vy += (tVY - this.vy) * 0.12; this.x += this.vx; this.y += this.vy; if (this.x > this.w + this.size) this.x = -this.size; if (this.x < -this.size) this.x = this.w + this.size; if (this.y > this.h + this.size) this.y = -this.size; if (this.y < -this.size) this.y = this.h + this.size; this.phase += 0.003; let tA = this.baseAlpha + (Math.sin(this.phase) * this.baseAlpha * 0.6); this.alpha += (tA - this.alpha) * 0.05; }
+                draw(ctx) { if (this.alpha <= 0.001) return; ctx.beginPath(); const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size); grad.addColorStop(0, `rgba(173, 216, 230, ${this.alpha * 0.6})`); grad.addColorStop(0.3, `rgba(91, 149, 187, ${this.alpha * 0.3})`); grad.addColorStop(1, `rgba(70, 99, 127, 0)`); ctx.fillStyle = grad; ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+            }
+            
+            function findInteractiveElements() {
+                interactiveElements = [];
+                document.querySelectorAll('.section .content-container, .project-card.active, .showreel-player-container, .contact-button, .header-scrolled, #backstage .glass-effect').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.width > 0 && rect.height > 0) interactiveElements.push({ cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2, radius: Math.max(rect.width, rect.height) / 2 + 60 });
+                });
+            }
+
+            function setupBackground() {
+                canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+                clouds = []; stars = []; shootingStars = [];
+                const cloudCount = Math.floor((canvas.width * canvas.height) / 28000), starCount = 150, shootingStarCount = 3;
+                for (let i = 0; i < cloudCount; i++) clouds.push(new Cloud(canvas.width, canvas.height));
+                for (let i = 0; i < starCount; i++) stars.push(new Star(canvas.width, canvas.height));
+                for (let i = 0; i < shootingStarCount; i++) shootingStars.push(new ShootingStar(canvas.width, canvas.height));
+                findInteractiveElements();
+            }
+
+            function animateBackground() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                mouse.x += (targetMouse.x - mouse.x) * 0.05; mouse.y += (targetMouse.y - mouse.y) * 0.05;
+                [...shootingStars, ...stars, ...clouds].forEach(s => { s.update(canvas.width, canvas.height); s.draw(ctx); });
+                animationFrameId = requestAnimationFrame(animateBackground);
+            }
+            
+            function startAnimation() { if (animationFrameId) cancelAnimationFrame(animationFrameId); setupBackground(); animateBackground(); }
+            startAnimation();
+            window.addEventListener('resize', debounce(startAnimation, 250));
+            let scrollTimeout;
+            window.addEventListener('scroll', () => { if (scrollTimeout) cancelAnimationFrame(scrollTimeout); scrollTimeout = requestAnimationFrame(findInteractiveElements); }, { passive: true });
+        }
+
+        // --- General Page Logic ---
+        const header = document.getElementById('header');
+        const body = document.body;
+        const observer = new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.1 });
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) { window.requestAnimationFrame(() => { header.classList.toggle('header-scrolled', window.scrollY > 50); body.classList.toggle('scrolled', window.scrollY > 50); ticking = false; }); ticking = true; }
+        }, { passive: true });
+
+        document.querySelectorAll('.magnetic-button, .magnetic-button-contact').forEach(button => {
+            const strength = button.classList.contains('magnetic-button-contact') ? 10 : 40;
+            button.addEventListener('mousemove', (e) => {
+                const { left, top, width, height } = button.getBoundingClientRect();
+                const moveX = (e.clientX - left - width / 2) / width * strength;
+                const moveY = (e.clientY - top - height / 2) / height * strength;
+                button.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+            button.addEventListener('mouseleave', () => button.style.transform = 'translate(0, 0)');
+        });
+
+        // --- Modal Logic ---
+        const projectModal = document.getElementById('project-modal');
+        const modalContent = document.getElementById('modal-content');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalVideo = document.getElementById('modal-video');
+        const modalVideoWrapper = document.querySelector('.modal-video-wrapper');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalStillsWrapper = document.getElementById('modal-stills-wrapper');
+        const stillsImage = document.getElementById('stills-image');
+        const stillsPrevBtn = document.getElementById('stills-prev-btn');
+        const stillsNextBtn = document.getElementById('stills-next-btn');
+        const modalLinkContainer = document.getElementById('modal-link-container');
+        let lastClickedCard = null, currentStills = [], currentStillIndex = 0;
+
+        function showStill(index) { if (!currentStills || currentStills.length === 0) return; currentStillIndex = (index + currentStills.length) % currentStills.length; stillsImage.src = currentStills[currentStillIndex]; }
+        if(stillsPrevBtn) stillsPrevBtn.addEventListener('click', () => showStill(currentStillIndex - 1));
+        if(stillsNextBtn) stillsNextBtn.addEventListener('click', () => showStill(currentStillIndex + 1));
+
+        function openModal(project, cardElement, videoSrc) {
+            if (!project || !cardElement) return;
+            lastClickedCard = cardElement;
+            lastClickedCard.classList.add('is-opening-modal');
+            
+            modalTitle.textContent = project.title;
+            modalDescription.innerHTML = `<strong>Роль:</strong> ${project.role || 'Не указана'}<br><br>${project.description || ''}`;
+            
+            modalLinkContainer.innerHTML = '';
+            if (project.externalLink) {
+                const linkButton = document.createElement('a');
+                linkButton.href = project.externalLink;
+                linkButton.target = '_blank';
+                linkButton.className = 'contact-button magnetic-button-contact pulsate-on-hover mt-4 inline-block';
+                linkButton.textContent = project.linkLabel || 'Смотреть';
+                modalLinkContainer.appendChild(linkButton);
+            }
+
+            const hasVideo = videoSrc && videoSrc !== "#";
+            modalVideoWrapper.classList.toggle('hidden', project.type === 'stills' || !hasVideo);
+            modalStillsWrapper.classList.toggle('hidden', project.type !== 'stills');
+
+            if (project.type === 'stills') {
+                currentStills = project.stills || [];
+                showStill(0);
+            } else if (hasVideo) {
+                modalVideo.src = videoSrc;
+            }
+            
+            projectModal.classList.add('is-visible');
+            document.body.style.overflow = 'hidden';
+            requestAnimationFrame(() => { modalContent.style.transform = 'scale(1)'; modalContent.style.opacity = '1'; });
+        }
+
+        function closeModal() {
+            projectModal.classList.remove('is-visible');
+            document.body.style.overflow = '';
+            modalVideo.src = "";
+            stillsImage.src = "";
+            currentStills = [];
+            if (lastClickedCard) { lastClickedCard.classList.remove('is-opening-modal'); lastClickedCard = null; }
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        projectModal.addEventListener('click', (e) => { if (e.target === projectModal) closeModal(); });
+        window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && projectModal.classList.contains('is-visible')) closeModal(); });
+
+        // --- Carousel Data and Initialization ---
+        const mainProjects = [
+            { title: "Lill 4.0 Reveal", role: "Оператор-постановщик", description: "Презентация нового устройства Iqos.", imagePlaceholder: "Lill 4.0 Reveal", videoUrl: "#" },
+            { title: "Lill 4.0 Teaser", role: "Оператор-постановщик", description: "Продуктовая съемка тизера нового устройства от Iqos.", imagePlaceholder: "Lill 4.0 Teaser", videoUrl: "#" },
+            { title: "Yandex x Green works Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imagePlaceholder: "Yandex x Green works Live", videoUrl: "#" },
+            { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Так уж случилось, что на самой важной и дорогой смене, оператор постановщик попал в больницу и я взял на себя его обязанности, и успешно с ними спраился.  Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/rpw15BHb/2025-08-21-14-36-54.jpg', 'https://i.postimg.cc/VLXWwBM7/2025-08-21-14-46-12.jpg', 'https://i.postimg.cc/Hsn3wg1M/2025-08-22-20-29-14.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
+            { title: 'Реклама для "Aikon"', role: "Оператор-постановщик", description: "Игровая реклама для бренда Aikon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", type: 'stills', stills: ['https://i.postimg.cc/wBRRDqBM/2025-06-23-15-15-03.jpg', 'https://i.postimg.cc/zGcRLb84/2025-06-23-15-12-46.jpg', 'https://i.postimg.cc/htjdPbW9/2025-06-23-15-11-15.jpg', 'https://i.postimg.cc/qqDpmKbT/2025-08-28-17-35-22.jpg'], videoUrl: "#" },
+            { title: "Однажды на Шри-Ланке", role: "Оператор-постановщик", description: "Документальный проект / Влог.", imagePlaceholder: "Однажды на Шри-Ланке", videoUrl: "https://www.youtube.com/watch?v=PqYpT5nCSbY&t=3745s" },
+            { title: "Cerca Trova Шоу", role: "Оператор-постановщик", description: "Съемка шоу Cerca Trova.", imagePlaceholder: "Cerca Trova Шоу", videoUrl: "https://www.youtube.com/watch?v=YO6_kVtYHZo&t=159s" },
+            { title: 'Проморолик для "StarLine"', role: "Режиссер, Оператор-постановщик", description: "В этом проекте я совмещал роли режиссера и оператора, работая со сложным оборудованием — роботизированной рукой (Robotic Arm). Здесь представлена моя авторская версия монтажа, наиболее полно отражающая оригинальный художественный замысел.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
+            { title: 'Рилс для "Beluga"', role: "Оператор-постановщик", description: "Проект на международный рынок для бренда Beluga, ставший моим первым опытом работы на европейском рынке. Проект с подписанным NDA на сумму €250,000.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
+            { title: 'Клип для "Егор Шип & Никита Кунов"', role: "Оператор-постановщик", description: "Несмотря на тщательную подготовку, на площадке возникали непредвиденные ситуации, требующие мгновенной реакции и нестандартных решений. Смена длилась 27 часов и включала строительство декорации на мусорном полигоне. Этот опыт продемонстрировал мою выносливость, стрессоустойчивость и способность добиваться результата в экстремальных условиях.", imageUrl: "https://i.postimg.cc/7hTvY0jF/2025-03-18-10-19-50.jpg", videoUrl: "https://www.youtube.com/watch?v=ewnrSaozgdI" },
+            { title: 'Клип "Бардак – Дело времени"', role: "Режиссер, Оператор-постановщик", description: "Творческий проект, в котором я исследовал эстетику аналоговой кинопленки, экспериментируя с цветом и композицией. Основной задачей было создание характерного «film look» и передача меланхоличной атмосферы. Эта работа — пример моего авторского видения и поиска уникального визуального языка вне коммерческих рамок.", imageUrl: "https://i.postimg.cc/FHVX0FC8/2025-08-12-21-11-38.jpg", videoUrl: "https://youtu.be/V_kQFygdvKQ" },
+            { title: "Концерт JONY, ВТБ Арена", role: "Оператор-постановщик (Director of Photography)", description: "Опыт работы в качестве оператора-постановщика на масштабном мероприятии — сольном концерте JONY на ВТБ Арене. Я отвечал за всю визуальную составляющую съемки: организацию многокамерной работы, постановку кадра и выбор ракурсов. Моей задачей было направить команду операторов и создать единый, динамичный визуальный ряд, который точно передает энергетику живого шоу.", imageUrl: "https://i.postimg.cc/0NBvnWfR/jhn.jpg", videoUrl: "https://vimeo.com/896531109" },
+            { title: '"The Story"', role: "Режиссер, Оператор-постановщик", description: "Визуальная притча, исследующая параллели между сценическим образом и внутренним миром героини — реальной балерины. Съемки проходили в аутентичных локациях театра и на натуре, сочетая документальные наблюдения с постановочными хореографическими этюдами. Проект о хрупкости души, скрытой за изнурительной дисциплиной большого искусства.", imageUrl: "https://i.postimg.cc/c1PWSb89/2025-08-12-21-09-06.jpg", videoUrl: "https://vimeo.com/1028864286" },
+            { title: 'Сниппет "Dovlatova"', role: "Режиссер, Оператор-постановщик", description: "Творческий эксперимент по созданию атмосферы мрачной сказки. В этом сниппете я работал над эстетикой «сказочного хоррора», уделяя особое внимание свету и композиции для создания тревожного и в то же время завораживающего настроения. Это мое исследование жанра и визуальных техник для погружения зрителя в потусторонний мир.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
+            { title: 'Клип "Litkovich – Принцип"', role: "Режиссер, Оператор-постановщик", description: "Одна из моих первых полноценных работ, ставшая отправной точкой в моем профессиональном пути. Этот проект был важнейшим этапом обучения «в поле», на котором я впервые провел идею через все стадии производства до финального монтажа. Он заложил основу для моего дальнейшего творческого и технического роста.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731"},
+            { title: "Queen of the Night", role: "Оператор-постановщик", description: "Творческая работа.", imageUrl: "https://i.postimg.cc/9Mr33dXH/2025-08-12-21-19-12.jpg", videoUrl: "https://vimeo.com/894197378" },
+            { title: "Liriana - Если не любовь", role: "Оператор-постановщик", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" }
+        ];
+
+        const experienceProjects = [
+            { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен (Camera Operator)", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
+            { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
+            { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imagePlaceholder: "Бомба Октябрь", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
+            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Естественно", videoUrl: "#" },
+            { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
+            { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
+            { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
+            { title: "Че о че", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках короткометражного фильма для Wink. В составе команды работал в качестве камерного оператора.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
+            { title: "SneakerBox", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "SneakerBox", videoUrl: "#" }
+        ];
+        
+        function initializeCarousel(carouselId, prevBtnId, nextBtnId, projects) {
+            const carousel = document.getElementById(carouselId);
+            if (!carousel) return;
+            let currentIndex = 0;
+            
+            projects.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.dataset.index = index;
+                const bgImage = project.imageUrl || `https://placehold.co/800x450/1d2a3a/6b7f94?text=${encodeURIComponent(project.imagePlaceholder || project.title)}`;
+                card.innerHTML = `<div class="card-inner"><div class="card-background" style="background-image: url('${bgImage}')"></div><div class="card-title-container"><h3 class="card-title">${project.title}</h3></div><div class="card-shutter card-shutter-left"></div><div class="card-shutter card-shutter-right"></div></div>`;
+                carousel.appendChild(card);
+            });
+
+            const cards = carousel.querySelectorAll('.project-card');
+            const totalCards = cards.length;
+
+            cards.forEach(card => {
+                const cardInner = card.querySelector('.card-inner');
+                const strength = 10;
+                card.addEventListener('mousemove', (e) => { if (!card.classList.contains('active')) return; const rect = card.getBoundingClientRect(); const x = e.offsetX, y = e.offsetY; const rotateY = (x - rect.width / 2) / (rect.width / 2) * strength; const rotateX = (y - rect.height / 2) / (rect.height / 2) * -strength; cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`; });
+                card.addEventListener('mouseleave', () => { cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+            });
+
+            function updateCarousel() {
+                cards.forEach((card, index) => {
+                    card.className = 'project-card'; // Reset classes
+                    let pos = (index - currentIndex + totalCards) % totalCards;
+                    const posMap = { 0: 'active', 1: 'next', 2: 'next2', [totalCards - 1]: 'prev', [totalCards - 2]: 'prev2' };
+                    card.classList.add(posMap[pos] || 'hidden');
+                });
+                findInteractiveElements();
+            }
+
+            function navigate(direction) { currentIndex = (currentIndex + direction + totalCards) % totalCards; updateCarousel(); }
+            document.getElementById(nextBtnId).addEventListener('click', () => navigate(1));
+            document.getElementById(prevBtnId).addEventListener('click', () => navigate(-1));
+            
+            carousel.addEventListener('click', (e) => {
+                const card = e.target.closest('.project-card');
+                if (!card) return;
+                const cardIndex = parseInt(card.dataset.index, 10);
+                if (card.classList.contains('active')) {
+                    const project = projects[cardIndex];
+                    
+                    if (project.redirect) { 
+                        window.open(project.videoUrl, '_blank'); 
+                        return; 
+                    }
+                    
+                    let urlToOpen = project.videoUrl;
+                    if (urlToOpen === '#') {
+                        urlToOpen = '';
+                    }
+
+                    if (urlToOpen && urlToOpen.includes('youtu')) { 
+                        const id = urlToOpen.includes('youtu.be/') ? urlToOpen.split('/').pop().split('?')[0] : urlToOpen.split('v=')[1].split('&')[0]; 
+                        let startParam = '';
+                        if (urlToOpen.includes('t=')) {
+                            const tVal = urlToOpen.split('t=')[1].split('&')[0].replace('s', '');
+                            startParam = `&start=${tVal}`;
+                        }
+                        urlToOpen = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0${startParam}`; 
+                    } 
+                    else if (urlToOpen && urlToOpen.includes('vimeo.com')) { const id = urlToOpen.split('/').pop().split('?')[0]; urlToOpen = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`; }
+                    
+                    openModal(project, card, urlToOpen);
+
+                } else {
+                    let diff = cardIndex - currentIndex;
+                    if (Math.abs(diff) > totalCards / 2) diff = diff > 0 ? diff - totalCards : diff + totalCards;
+                    navigate(diff);
+                }
+            });
+            updateCarousel();
+        }
+
+        initializeCarousel('main-carousel', 'main-prev-btn', 'main-next-btn', mainProjects);
+        initializeCarousel('experience-carousel', 'exp-prev-btn', 'exp-next-btn', experienceProjects);
+    });
+    </script>
+</body>
+</html>
