@@ -192,7 +192,7 @@
             aspect-ratio: 16 / 9;
             border-radius: 1.25rem; 
             transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s, filter 0.6s, box-shadow 0.5s ease; 
-            cursor: pointer; overflow: hidden; 
+            overflow: hidden; 
             background-color: rgba(28, 38, 50, 0.5);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -213,7 +213,7 @@
         }
 
         /* Desktop Carousel Transforms */
-        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; }
+        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; cursor: pointer; }
         .project-card.prev { transform: translateX(-50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.next { transform: translateX(50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.prev2 { transform: translateX(-90%) translateZ(-400px) scale(0.7); opacity: 0.2; filter: blur(6px); z-index: 1; }
@@ -248,7 +248,7 @@
             opacity: 0 !important;
             transition: opacity 0.2s ease !important;
         }
-        .project-card:hover .card-title-container {
+        .project-card.active .card-title-container {
             opacity: 1;
             pointer-events: auto;
         }
@@ -268,8 +268,8 @@
         }
         .card-shutter-left { left: 0; }
         .card-shutter-right { right: 0; }
-        .project-card:hover .card-shutter-left { transform: translateX(-100%); }
-        .project-card:hover .card-shutter-right { transform: translateX(100%); }
+        .project-card.active .card-shutter-left { transform: translateX(-100%); }
+        .project-card.active .card-shutter-right { transform: translateX(100%); }
 
         .nav-button { position: absolute; top: 50%; transform: translateY(-50%); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; z-index: 20; display: flex; justify-content: center; align-items: center; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .nav-button:hover { box-shadow: 0 0 20px rgba(173, 216, 230, 0.2); }
@@ -434,7 +434,7 @@
             <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Избранные проекты</h2>
                 <p class="text-lg max-w-3xl mx-auto mb-2 text-white">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
-                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
+                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Нажмите на центральную карточку для просмотра деталей.</p>
                 <p class="font-bold text-yellow-400 max-w-3xl mx-auto mb-12">Для просмотра некоторых проектов может потребоваться VPN.</p>
                 <div class="relative w-full">
                     <div id="main-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
@@ -758,7 +758,7 @@
             { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен (Camera Operator)", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
             { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
             { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imageUrl: "https://i.postimg.cc/HW5ztrjk/Snimok-ekrana-2026-06-04-v-14-48-33.png", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
-            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/NqbdD5XSja0" },
+            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/pl9rRNYwETk" },
             { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
             { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
             { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
@@ -834,10 +834,6 @@
                     
                     openModal(project, card, urlToOpen);
 
-                } else {
-                    let diff = cardIndex - currentIndex;
-                    if (Math.abs(diff) > totalCards / 2) diff = diff > 0 ? diff - totalCards : diff + totalCards;
-                    navigate(diff);
                 }
             });
             updateCarousel();
