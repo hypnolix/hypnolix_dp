@@ -292,9 +292,10 @@
             #modal-title { font-size: 1.75rem; }
         }
         
-        /* Showreel section */
-        #showreel { min-height: auto; padding: 12rem 1rem; }
-        #showreel .content-container { padding-left: 1rem; padding-right: 1rem; }
+        /* Reels sections */
+        #commercial-reel { min-height: auto; padding: 10rem 1rem 4rem; }
+        #showreel { min-height: auto; padding: 4rem 1rem 10rem; }
+        #showreel .content-container, #commercial-reel .content-container { padding-left: 1rem; padding-right: 1rem; }
         .showreel-player-container { display: block; width: 100%; max-width: 1152px; margin: 2rem auto 0; aspect-ratio: 16 / 9; border-radius: 1.5rem; position: relative; transition: transform 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 0 12px rgba(91, 149, 187, 0.3), 0 0 25px rgba(91, 149, 187, 0.2), 0 0 50px rgba(70, 99, 127, 0.15), inset 0 0 10px rgba(20, 20, 20, 0.5); }
         .showreel-player-container:hover { transform: scale(1.02); box-shadow: 0 0 18px rgba(91, 149, 187, 0.5), 0 0 40px rgba(91, 149, 187, 0.35), 0 0 80px rgba(70, 99, 127, 0.25), inset 0 0 10px rgba(20, 20, 20, 0.5); }
         .showreel-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1.5rem; }
@@ -399,9 +400,24 @@
             <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
                 <div class="w-full max-w-4xl mx-auto">
                     <div class="aspect-video rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl p-1 bg-white/5">
-                         <img src="https://i.postimg.cc/7ZCskyB4/2024-12-16-23-35-02.png" alt="[Фото Иванова Сергея]" class="object-cover w-full h-full rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/111827/374151?text=Фото';">
+                         <img src="https://i.postimg.cc/zvxP1f6D/Snimok-ekrana-2026-06-04-v-15-36-23.png" alt="[Фото Сергея Иванова]" class="object-cover w-full h-full rounded-xl" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/111827/374151?text=Фото';">
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Commercial Reel Section -->
+        <section id="commercial-reel" class="section">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl sm:text-5xl md:text-7xl tracking-tight text-center liquid-text">COMMERCIAL REEL</h2>
+                <a href="https://www.youtube.com/watch?v=YZb42103dqw" target="_blank" class="showreel-player-container block relative group cursor-pointer overflow-hidden">
+                    <img src="https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg" alt="Commercial Reel" class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/1280x720/111827/374151?text=COMMERCIAL+REEL';">
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                </a>
             </div>
         </section>
 
@@ -719,13 +735,13 @@
 
         // --- Carousel Data and Initialization ---
         const mainProjects = [
-            { title: "Lill 4.0 Reveal", role: "Оператор-постановщик", description: "Презентация нового устройства Iqos.", imagePlaceholder: "Lill 4.0 Reveal", videoUrl: "#" },
-            { title: "Lill 4.0 Teaser", role: "Оператор-постановщик", description: "Продуктовая съемка тизера нового устройства от Iqos.", imagePlaceholder: "Lill 4.0 Teaser", videoUrl: "#" },
-            { title: "Yandex x Green works Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imagePlaceholder: "Yandex x Green works Live", videoUrl: "#" },
+            { title: "Lill 4.0 Reveal", role: "Оператор-постановщик", description: "Презентация нового устройства Iqos.", imageUrl: "https://i.postimg.cc/NMn6xcvz/Snimok-ekrana-2026-06-04-v-14-39-03.png", videoUrl: "https://youtu.be/mK2SULbLIfA" },
+            { title: "Lill 4.0 Teaser", role: "Оператор-постановщик", description: "Продуктовая съемка тизера нового устройства от Iqos. Ролик был полностью снят с использованием роботизированной руки (Robotic Arm).", imageUrl: "https://i.postimg.cc/XNhLfwVZ/Snimok-ekrana-2026-06-04-v-14-34-09.png", videoUrl: "https://youtu.be/LL0UjjaSXGM" },
+            { title: "Yandex x Green works Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imageUrl: "https://i.postimg.cc/QtqpRT5L/IMG-9121.avif", videoUrl: "#" },
             { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Так уж случилось, что на самой важной и дорогой смене, оператор постановщик попал в больницу и я взял на себя его обязанности, и успешно с ними спраился.  Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/rpw15BHb/2025-08-21-14-36-54.jpg', 'https://i.postimg.cc/VLXWwBM7/2025-08-21-14-46-12.jpg', 'https://i.postimg.cc/Hsn3wg1M/2025-08-22-20-29-14.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
             { title: 'Реклама для "Aikon"', role: "Оператор-постановщик", description: "Игровая реклама для бренда Aikon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", type: 'stills', stills: ['https://i.postimg.cc/wBRRDqBM/2025-06-23-15-15-03.jpg', 'https://i.postimg.cc/zGcRLb84/2025-06-23-15-12-46.jpg', 'https://i.postimg.cc/htjdPbW9/2025-06-23-15-11-15.jpg', 'https://i.postimg.cc/qqDpmKbT/2025-08-28-17-35-22.jpg'], videoUrl: "#" },
-            { title: "Однажды на Шри-Ланке", role: "Оператор-постановщик", description: "Документальный проект / Влог.", imagePlaceholder: "Однажды на Шри-Ланке", videoUrl: "https://www.youtube.com/watch?v=PqYpT5nCSbY&t=3745s" },
-            { title: "Cerca Trova Шоу", role: "Оператор-постановщик", description: "Съемка шоу Cerca Trova.", imagePlaceholder: "Cerca Trova Шоу", videoUrl: "https://www.youtube.com/watch?v=YO6_kVtYHZo&t=159s" },
+            { title: "Однажды на Шри-Ланке", role: "Оператор-постановщик", description: "Документальный проект / Влог.", imageUrl: "https://i.postimg.cc/2SJLJxK1/Snimok-ekrana-2026-06-04-v-14-51-17.png", videoUrl: "https://www.youtube.com/watch?v=PqYpT5nCSbY&t=4802s" },
+            { title: "Cerca Trova Шоу", role: "Оператор-постановщик", description: "Съемка шоу Cerca Trova.", imageUrl: "https://i.postimg.cc/447LSJNW/Snimok-ekrana-2026-03-13-v-23-20-21.png", videoUrl: "https://www.youtube.com/watch?v=YO6_kVtYHZo&t=159s" },
             { title: 'Проморолик для "StarLine"', role: "Режиссер, Оператор-постановщик", description: "В этом проекте я совмещал роли режиссера и оператора, работая со сложным оборудованием — роботизированной рукой (Robotic Arm). Здесь представлена моя авторская версия монтажа, наиболее полно отражающая оригинальный художественный замысел.", imageUrl: "https://i.postimg.cc/x12SkN5L/2025-08-12-21-11-27.jpg", videoUrl: "https://vimeo.com/1109360641?share=copy" },
             { title: 'Рилс для "Beluga"', role: "Оператор-постановщик", description: "Проект на международный рынок для бренда Beluga, ставший моим первым опытом работы на европейском рынке. Проект с подписанным NDA на сумму €250,000.", imageUrl: "https://i.postimg.cc/PrZjrQWt/2025-08-12-21-10-54.jpg", videoUrl: "https://disk.yandex.ru/d/bjUH3ocsHoikpA/3.mov" },
             { title: 'Клип для "Егор Шип & Никита Кунов"', role: "Оператор-постановщик", description: "Несмотря на тщательную подготовку, на площадке возникали непредвиденные ситуации, требующие мгновенной реакции и нестандартных решений. Смена длилась 27 часов и включала строительство декорации на мусорном полигоне. Этот опыт продемонстрировал мою выносливость, стрессоустойчивость и способность добиваться результата в экстремальных условиях.", imageUrl: "https://i.postimg.cc/7hTvY0jF/2025-03-18-10-19-50.jpg", videoUrl: "https://www.youtube.com/watch?v=ewnrSaozgdI" },
@@ -741,8 +757,8 @@
         const experienceProjects = [
             { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен (Camera Operator)", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
             { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
-            { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imagePlaceholder: "Бомба Октябрь", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
-            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imagePlaceholder: "Естественно", videoUrl: "#" },
+            { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imageUrl: "https://i.postimg.cc/HW5ztrjk/Snimok-ekrana-2026-06-04-v-14-48-33.png", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
+            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/NqbdD5XSja0" },
             { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
             { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
             { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
