@@ -193,9 +193,7 @@
             border-radius: 1.25rem; 
             transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s, filter 0.6s, box-shadow 0.5s ease; 
             cursor: pointer; overflow: hidden; 
-            background-color: rgba(28, 38, 50, 0.5);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background-color: #0F172A;
             border: 1px solid rgba(255, 255, 255, 0.08);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             transform-style: preserve-3d;
@@ -213,7 +211,7 @@
         }
 
         /* Desktop Carousel Transforms */
-        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; }
+        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; cursor: pointer; }
         .project-card.prev { transform: translateX(-50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.next { transform: translateX(50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.prev2 { transform: translateX(-90%) translateZ(-400px) scale(0.7); opacity: 0.2; filter: blur(6px); z-index: 1; }
@@ -229,8 +227,9 @@
 
         .card-background {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center;
+            object-fit: cover;
             transition: transform 0.5s ease;
+            z-index: 1;
         }
         .project-card:hover .card-background {
             transform: scale(1.05);
@@ -248,7 +247,7 @@
             opacity: 0 !important;
             transition: opacity 0.2s ease !important;
         }
-        .project-card:hover .card-title-container {
+        .project-card.active .card-title-container {
             opacity: 1;
             pointer-events: auto;
         }
@@ -260,16 +259,16 @@
         }
         .card-shutter {
             position: absolute; top: 0; height: 100%; width: 50.5%;
-            background-color: rgba(5, 5, 8, 0.8);
-            -webkit-backdrop-filter: blur(2px);
-            backdrop-filter: blur(2px);
+            background-color: rgba(5, 5, 8, 0.4);
+            -webkit-backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px);
             transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
             z-index: 2;
         }
         .card-shutter-left { left: 0; }
         .card-shutter-right { right: 0; }
-        .project-card:hover .card-shutter-left { transform: translateX(-100%); }
-        .project-card:hover .card-shutter-right { transform: translateX(100%); }
+        .project-card.active .card-shutter-left { transform: translateX(-100%); }
+        .project-card.active .card-shutter-right { transform: translateX(100%); }
 
         .nav-button { position: absolute; top: 50%; transform: translateY(-50%); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; z-index: 20; display: flex; justify-content: center; align-items: center; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .nav-button:hover { box-shadow: 0 0 20px rgba(173, 216, 230, 0.2); }
@@ -434,7 +433,7 @@
             <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Избранные проекты</h2>
                 <p class="text-lg max-w-3xl mx-auto mb-2 text-white">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
-                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
+                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Нажмите на центральную карточку для просмотра деталей.</p>
                 <p class="font-bold text-yellow-400 max-w-3xl mx-auto mb-12">Для просмотра некоторых проектов может потребоваться VPN.</p>
                 <div class="relative w-full">
                     <div id="main-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
@@ -737,7 +736,7 @@
         const mainProjects = [
             { title: "Lill 4.0 Reveal", role: "Оператор-постановщик", description: "Презентация нового устройства Iqos.", imageUrl: "https://i.postimg.cc/NMn6xcvz/Snimok-ekrana-2026-06-04-v-14-39-03.png", videoUrl: "https://youtu.be/mK2SULbLIfA" },
             { title: "Lill 4.0 Teaser", role: "Оператор-постановщик", description: "Продуктовая съемка тизера нового устройства от Iqos. Ролик был полностью снят с использованием роботизированной руки (Robotic Arm).", imageUrl: "https://i.postimg.cc/XNhLfwVZ/Snimok-ekrana-2026-06-04-v-14-34-09.png", videoUrl: "https://youtu.be/LL0UjjaSXGM" },
-            { title: "Yandex x Green works Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imageUrl: "https://i.postimg.cc/QtqpRT5L/IMG-9121.avif", videoUrl: "#" },
+            { title: "Yandex x Greenworks Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imageUrl: "https://i.postimg.cc/QtqpRT5L/IMG-9121.avif", videoUrl: "#" },
             { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Так уж случилось, что на самой важной и дорогой смене, оператор постановщик попал в больницу и я взял на себя его обязанности, и успешно с ними спраился.  Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/rpw15BHb/2025-08-21-14-36-54.jpg', 'https://i.postimg.cc/VLXWwBM7/2025-08-21-14-46-12.jpg', 'https://i.postimg.cc/Hsn3wg1M/2025-08-22-20-29-14.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
             { title: 'Реклама для "Aikon"', role: "Оператор-постановщик", description: "Игровая реклама для бренда Aikon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", type: 'stills', stills: ['https://i.postimg.cc/wBRRDqBM/2025-06-23-15-15-03.jpg', 'https://i.postimg.cc/zGcRLb84/2025-06-23-15-12-46.jpg', 'https://i.postimg.cc/htjdPbW9/2025-06-23-15-11-15.jpg', 'https://i.postimg.cc/qqDpmKbT/2025-08-28-17-35-22.jpg'], videoUrl: "#" },
             { title: "Однажды на Шри-Ланке", role: "Оператор-постановщик", description: "Документальный проект / Влог.", imageUrl: "https://i.postimg.cc/2SJLJxK1/Snimok-ekrana-2026-06-04-v-14-51-17.png", videoUrl: "https://www.youtube.com/watch?v=PqYpT5nCSbY&t=4802s" },
@@ -751,21 +750,23 @@
             { title: 'Сниппет "Dovlatova"', role: "Режиссер, Оператор-постановщик", description: "Творческий эксперимент по созданию атмосферы мрачной сказки. В этом сниппете я работал над эстетикой «сказочного хоррора», уделяя особое внимание свету и композиции для создания тревожного и в то же время завораживающего настроения. Это мое исследование жанра и визуальных техник для погружения зрителя в потусторонний мир.", imageUrl: "https://i.postimg.cc/VN7yHG8F/2025-08-12-21-18-53.jpg", videoUrl: "https://youtu.be/hvIO5K0IWXc" },
             { title: 'Клип "Litkovich – Принцип"', role: "Режиссер, Оператор-постановщик", description: "Одна из моих первых полноценных работ, ставшая отправной точкой в моем профессиональном пути. Этот проект был важнейшим этапом обучения «в поле», на котором я впервые провел идею через все стадии производства до финального монтажа. Он заложил основу для моего дальнейшего творческого и технического роста.", imageUrl: "https://i.postimg.cc/gcxp1WrL/2025-08-12-21-10-43.jpg", videoUrl: "https://vimeo.com/862518731"},
             { title: "Queen of the Night", role: "Оператор-постановщик", description: "Творческая работа.", imageUrl: "https://i.postimg.cc/9Mr33dXH/2025-08-12-21-19-12.jpg", videoUrl: "https://vimeo.com/894197378" },
-            { title: "Liriana - Если не любовь", role: "Оператор-постановщик", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" }
+            { title: "Liriana - Если не любовь", role: "Оператор-постановщик", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/6qrYFqZN/2025-05-25-12-39-06.jpg", videoUrl: "https://youtu.be/Dap7VRfcwjs" },
+            { title: "Erich Krause", role: "Оператор-постановщик", description: "Рекламный проект.", imagePlaceholder: "Erich Krause", videoUrl: "#" }
         ];
 
         const experienceProjects = [
             { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен (Camera Operator)", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
+            { title: "МАТЧ ТВ промо", role: "Камерамен, 2-й юнит", description: "Оператор-постановщик - Леша Янков, а я там работал в качестве 2-го юнита, камерамена.", imageUrl: "https://i.postimg.cc/bwpBx1N9/Snimok-ekrana-2026-07-29-v-22-37-30.png", videoUrl: "https://vimeo.com/1211737846" },
             { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
             { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imageUrl: "https://i.postimg.cc/HW5ztrjk/Snimok-ekrana-2026-06-04-v-14-48-33.png", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
-            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/NqbdD5XSja0" },
+            { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/pl9rRNYwETk" },
             { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
             { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
             { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
             { title: "Че о че", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках короткометражного фильма для Wink. В составе команды работал в качестве камерного оператора.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
             { title: "SneakerBox", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "SneakerBox", videoUrl: "#" }
         ];
-        
+
         function initializeCarousel(carouselId, prevBtnId, nextBtnId, projects) {
             const carousel = document.getElementById(carouselId);
             if (!carousel) return;
@@ -776,7 +777,7 @@
                 card.className = 'project-card';
                 card.dataset.index = index;
                 const bgImage = project.imageUrl || `https://placehold.co/800x450/1d2a3a/6b7f94?text=${encodeURIComponent(project.imagePlaceholder || project.title)}`;
-                card.innerHTML = `<div class="card-inner"><div class="card-background" style="background-image: url('${bgImage}')"></div><div class="card-title-container"><h3 class="card-title">${project.title}</h3></div><div class="card-shutter card-shutter-left"></div><div class="card-shutter card-shutter-right"></div></div>`;
+                card.innerHTML = `<div class="card-inner"><img src="${bgImage}" class="card-background" alt="Обложка"><div class="card-title-container"><h3 class="card-title">${project.title}</h3></div><div class="card-shutter card-shutter-left"></div><div class="card-shutter card-shutter-right"></div></div>`;
                 carousel.appendChild(card);
             });
 
@@ -834,10 +835,6 @@
                     
                     openModal(project, card, urlToOpen);
 
-                } else {
-                    let diff = cardIndex - currentIndex;
-                    if (Math.abs(diff) > totalCards / 2) diff = diff > 0 ? diff - totalCards : diff + totalCards;
-                    navigate(diff);
                 }
             });
             updateCarousel();
