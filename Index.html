@@ -1,20 +1,16 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сергей Иванов - Оператор-постановщик</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Иванов Сергей | Оператор-постановщик</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        /* General styles for smooth scrolling and base layout */
-        html, body {
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-
         body {
             font-family: 'Lato', sans-serif;
             background-color: #050508;
@@ -22,7 +18,6 @@
             position: relative;
         }
         
-        /* Canvas for interactive background */
         #interactive-bg-canvas {
             position: fixed;
             top: 0;
@@ -33,7 +28,6 @@
             pointer-events: none;
         }
 
-        /* Tilt-shift effect overlay on scroll */
         .tilt-shift-overlay {
             position: fixed;
             top: 0;
@@ -67,7 +61,6 @@
             opacity: 1;
         }
 
-        /* Preloader styles */
         #preloader {
             position: fixed; inset: 0; background-color: #000000;
             z-index: 9999; display: flex; justify-content: center; align-items: center;
@@ -97,7 +90,6 @@
         .status-standby { color: #39FF14; border: 1px solid #39FF14; }
         .status-rec { background-color: #FF0000; color: #000000; border: 1px solid #FF0000; }
 
-        /* Header styles */
         .header {
             position: fixed; top: 0; left: 0; width: 100%;
             padding: 1.5rem 2rem; z-index: 1000;
@@ -107,7 +99,6 @@
         .header-scrolled { background-color: rgba(10, 15, 20, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
         .header .logo a { font-size: 1.75rem; font-weight: 800; color: #FFFFFF; letter-spacing: -1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
         
-        /* Pulsating animation for logo and buttons */
         @keyframes pulse {
             0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
             50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8); }
@@ -120,14 +111,12 @@
             animation: pulse 2.5s infinite ease-in-out;
         }
 
-        /* Pulsating glow for contact buttons */
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 18px rgba(91, 149, 187, 0.4), 0 0 35px rgba(91, 149, 187, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.05); }
             50% { box-shadow: 0 0 25px rgba(91, 149, 187, 0.7), 0 0 50px rgba(91, 149, 187, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.05); }
             100% { box-shadow: 0 0 18px rgba(91, 149, 187, 0.4), 0 0 35px rgba(91, 149, 187, 0.25), inset 0 0 10px rgba(255, 255, 255, 0.05); }
         }
         
-        /* Navigation link styles (Liquid Glass / Magnetic) */
         .header nav a { 
             color: #D1D5DB; margin-left: 0.5rem; font-weight: 500; 
             transition: color 0.3s, text-shadow 0.3s, transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
@@ -147,7 +136,6 @@
             box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.05);
         }
 
-        /* Section layout */
         .section {
             min-height: 100vh; width: 100%;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -157,7 +145,6 @@
 
         .content-container { position: relative; z-index: 2; text-align: center; color: white; width: 100%; }
         
-        /* Special text styles */
         .liquid-text { 
             font-weight: 700; 
             background: linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.6) 100%); 
@@ -167,7 +154,6 @@
         }
         .section-title { font-weight: 700; color: #FFFFFF; text-shadow: 0 0 20px rgba(255, 255, 255, 0.15); }
         
-        /* Reveal on scroll animation */
         .reveal-on-scroll {
             opacity: 0;
             transform: translateY(40px);
@@ -179,11 +165,9 @@
             transform: translateY(0);
         }
 
-        /* Scroll down arrow animation */
         .scroll-down-arrow { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); z-index: 2; animation: bounce 2s infinite; }
         @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); } 40% { transform: translateX(-50%) translateY(-20px); } 60% { transform: translateX(-50%) translateY(-10px); } }
 
-        /* Carousel styles */
         .carousel-container { position: relative; width: 100%; perspective: 1800px; }
         
         .project-card { 
@@ -192,7 +176,7 @@
             aspect-ratio: 16 / 9;
             border-radius: 1.25rem; 
             transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.6s, filter 0.6s, box-shadow 0.5s ease; 
-            overflow: hidden; 
+            cursor: pointer; overflow: hidden; 
             background-color: rgba(28, 38, 50, 0.5);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
@@ -213,7 +197,7 @@
         }
 
         /* Desktop Carousel Transforms */
-        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; cursor: pointer; }
+        .project-card.active { transform: translateZ(0) scale(1); opacity: 1; filter: blur(0px); z-index: 10; }
         .project-card.prev { transform: translateX(-50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.next { transform: translateX(50%) translateZ(-200px) scale(0.85); opacity: 0.5; filter: blur(3px); z-index: 5; }
         .project-card.prev2 { transform: translateX(-90%) translateZ(-400px) scale(0.7); opacity: 0.2; filter: blur(6px); z-index: 1; }
@@ -235,6 +219,7 @@
         .project-card:hover .card-background {
             transform: scale(1.05);
         }
+        
         .card-title-container {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -248,7 +233,7 @@
             opacity: 0 !important;
             transition: opacity 0.2s ease !important;
         }
-        .project-card.active .card-title-container {
+        .project-card:hover .card-title-container {
             opacity: 1;
             pointer-events: auto;
         }
@@ -274,33 +259,29 @@
         .nav-button { position: absolute; top: 50%; transform: translateY(-50%); color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 24px; z-index: 20; display: flex; justify-content: center; align-items: center; text-shadow: 0 0 5px rgba(0,0,0,0.5); }
         .nav-button:hover { box-shadow: 0 0 20px rgba(173, 216, 230, 0.2); }
         
-        /* Modal styles */
         .modal-overlay { position: fixed; inset: 0; z-index: 1001; display: flex; align-items: center; justify-content: center; padding: 1rem; opacity: 0; visibility: hidden; background-color: rgba(0, 0, 0, 0.0); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), backdrop-filter 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s; }
         .modal-overlay.is-visible { opacity: 1; visibility: visible; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .modal-content { width: 100%; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; border-radius: 1.5rem; box-shadow: 0 0 30px rgba(91, 149, 187, 0.2), 0 0 60px rgba(70, 99, 127, 0.15); opacity: 0; will-change: transform, opacity; transform-origin: center center; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-out; }
+        .modal-content { width: 100%; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; border-radius: 1.5rem; box-shadow: 0 0 30px rgba(91, 149, 187, 0.2), 0 0 60px rgba(70, 99, 127, 0.15); opacity: 0; will-change: transform, opacity; transform-origin: center center; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease-out; background: #050508; border: 1px solid rgba(255, 255, 255, 0.1); }
         .modal-overlay.is-visible .modal-content { opacity: 1; }
-        .modal-header { padding: 1rem 1.5rem; flex-shrink: 0; display: flex; justify-content: flex-end; align-items: center; }
-        .modal-close-btn { background-color: rgba(255, 255, 255, 0.1); color: #9CA3AF; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; transition: background-color 0.3s, color 0.3s; }
+        .modal-header { padding: 1rem 1.5rem; flex-shrink: 0; display: flex; justify-content: flex-end; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .modal-close-btn { background-color: rgba(255, 255, 255, 0.1); color: #9CA3AF; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 24px; line-height: 1; transition: background-color 0.3s, color 0.3s; cursor: pointer; border: none; }
         .modal-close-btn:hover { background-color: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
-        .modal-body { padding: 0 1rem 1.5rem; overflow-y: auto; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        .modal-body { padding: 1.5rem; overflow-y: auto; display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         .modal-video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background-color: #000; border-radius: 1rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); }
         .modal-video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         #modal-title { font-size: 1.5rem; font-weight: 700; color: #FFFFFF; margin-bottom: 1rem; }
         #modal-description { font-size: 1rem; color: #D1D5DB; line-height: 1.7; }
         @media (min-width: 1024px) { 
-            .modal-body { grid-template-columns: 5fr 4fr; align-items: center; padding: 0 2rem 2rem; }
+            .modal-body { grid-template-columns: 5fr 4fr; align-items: center; padding: 2rem; }
             #modal-title { font-size: 1.75rem; }
         }
         
-        /* Reels sections */
-        #commercial-reel { min-height: auto; padding: 10rem 1rem 4rem; }
-        #showreel { min-height: auto; padding: 4rem 1rem 10rem; }
+        #showreel, #commercial-reel { min-height: auto; padding: 6rem 1rem; }
         #showreel .content-container, #commercial-reel .content-container { padding-left: 1rem; padding-right: 1rem; }
         .showreel-player-container { display: block; width: 100%; max-width: 1152px; margin: 2rem auto 0; aspect-ratio: 16 / 9; border-radius: 1.5rem; position: relative; transition: transform 0.4s ease, box-shadow 0.4s ease; box-shadow: 0 0 12px rgba(91, 149, 187, 0.3), 0 0 25px rgba(91, 149, 187, 0.2), 0 0 50px rgba(70, 99, 127, 0.15), inset 0 0 10px rgba(20, 20, 20, 0.5); }
         .showreel-player-container:hover { transform: scale(1.02); box-shadow: 0 0 18px rgba(91, 149, 187, 0.5), 0 0 40px rgba(91, 149, 187, 0.35), 0 0 80px rgba(70, 99, 127, 0.25), inset 0 0 10px rgba(20, 20, 20, 0.5); }
         .showreel-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 1.5rem; }
         
-        /* Contact button styles */
         .contact-button-wrapper { position: relative; }
         .contact-button {
             display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
@@ -323,11 +304,10 @@
             .header { padding: 1rem; } 
             .header .logo a { font-size: 1.5rem; } 
             .section { padding: 5rem 1rem 3rem; } 
-            #showreel { padding: 8rem 1rem; } 
+            #showreel, #commercial-reel { padding: 8rem 1rem; } 
         }
         @media (orientation: portrait) { .playback-main-view { width: 90vw; max-width: none; max-height: 90vw; } }
         
-        /* Preloader mobile adjustments */
         @media (max-width: 420px) {
             .playback-info-bottom-center {
                 flex-wrap: wrap;
@@ -345,38 +325,40 @@
         }
     </style>
 </head>
-<body>
-    <!-- Preloader -->
+<body class="antialiased overflow-x-hidden">
+
     <div id="preloader">
         <div id="alexa-playback-ui">
             <div class="playback-main-view">
-                <div class="playback-info playback-info-top-left"> <div class="info-block">FPS: 25.000</div> <div class="info-block">SHUTTER: 180.0&deg;</div> </div>
-                <div class="playback-info playback-info-top-right"> <div class="info-block">EI: 800</div> <div class="info-block">WB: 5600K</div> </div>
+                <div class="playback-info playback-info-top-left">
+                    <span class="info-block">FPS 25</span>
+                    <span class="info-block">SHUTTER 1/50</span>
+                    <span class="info-block">ND 0.6</span>
+                </div>
+                <div class="playback-info playback-info-top-right">
+                    <span class="info-block">ISO 800</span>
+                    <span class="info-block">WB 5600K</span>
+                </div>
                 <div class="playback-info playback-info-bottom-center">
                     <div class="bottom-info-group">
-                        <div class="info-block">BAT: 28.2V</div>
+                        <span id="rec-status" class="status-indicator"></span>
+                        <span id="timecode" class="info-block"></span>
                     </div>
-                    <div class="bottom-info-group">
-                        <div class="info-block">I008 S002</div> 
-                        <div id="rec-status" class="status-indicator">STBY</div> 
-                        <div class="info-block">CARD: 0:21h</div>
-                    </div>
-                    <div class="bottom-info-group">
-                        <div id="timecode" class="info-block">TC 02:00:03:17</div>
+                    <div class="bottom-info-group hidden sm:flex">
+                        <span class="info-block">BAT 98%</span>
+                        <span class="info-block">MEDIA 124 MIN</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Interactive background and overlays -->
     <canvas id="interactive-bg-canvas"></canvas>
     <div class="tilt-shift-overlay"></div>
 
-    <!-- Header with Navigation -->
     <header id="header" class="header">
         <div class="logo"> <a href="#hero" class="pulsate">IS DP</a> </div>
-        <nav class="hidden md:block"> 
+        <nav class="hidden md:flex items-center gap-2"> 
             <a href="#showreel" class="magnetic-button pulsate-on-hover">SHOWREEL</a> 
             <a href="#works" class="magnetic-button pulsate-on-hover">Проекты</a> 
             <a href="#experience" class="magnetic-button pulsate-on-hover">Опыт</a> 
@@ -386,16 +368,16 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
         <section id="hero" class="section h-screen">
             <div class="content-container">
                 <h1 class="text-4xl sm:text-5xl md:text-7xl lg:text-8xl tracking-tight liquid-text">Иванов Сергей</h1>
                 <p class="mt-4 text-lg md:text-2xl font-light" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">Оператор-постановщик</p>
             </div>
-            <a href="#photo-section" class="scroll-down-arrow"> <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg> </a>
+            <a href="#photo-section" class="scroll-down-arrow"> 
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg> 
+            </a>
         </section>
 
-        <!-- Photo Section -->
         <section id="photo-section" class="section" style="min-height: auto; padding-top: 4rem; padding-bottom: 8rem;">
             <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
                 <div class="w-full max-w-4xl mx-auto">
@@ -406,35 +388,37 @@
             </div>
         </section>
 
-        <!-- Commercial Reel Section -->
-        <section id="commercial-reel" class="section">
-            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
-                <h2 class="text-4xl sm:text-5xl md:text-7xl tracking-tight text-center liquid-text">COMMERCIAL REEL</h2>
-                <a href="https://www.youtube.com/watch?v=YZb42103dqw" target="_blank" class="showreel-player-container block relative group cursor-pointer overflow-hidden">
-                    <img src="https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg" alt="Commercial Reel" class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/1280x720/111827/374151?text=COMMERCIAL+REEL';">
-                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center">
-                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-[0_0_30px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-300">
-                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-        <!-- Showreel Section -->
+        <!-- Главный шоурил -->
         <section id="showreel" class="section">
             <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl sm:text-5xl md:text-7xl tracking-tight text-center liquid-text">SHOWREEL</h2>
-                <div class="showreel-player-container"> <iframe src="https://player.vimeo.com/video/1084894000?title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe> </div>
+                <div class="showreel-player-container"> 
+                    <iframe src="https://player.vimeo.com/video/1084894000?title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe> 
+                </div>
             </div>
         </section>
 
-        <!-- Works Section -->
+        <!-- Рекламный шоурил -->
+        <section id="commercial-reel" class="section">
+            <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
+                <h2 class="text-4xl sm:text-5xl md:text-7xl tracking-tight text-center liquid-text">COMMERCIAL REEL</h2>
+                <p class="text-lg mt-2 mb-8" style="color: #EF5350;">(Раздел в процессе сборки. Текущее видео — временная заглушка)</p>
+                <div class="showreel-player-container group cursor-pointer" onclick="window.open('https://youtu.be/YZb42103dqw', '_blank')"> 
+                    <img src="https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg" alt="Commercial Reel" class="w-full h-full object-cover rounded-xl opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <svg class="w-8 h-8 text-white ml-2" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section id="works" class="section">
             <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Избранные проекты</h2>
-                <p class="text-lg max-w-3xl mx-auto mb-2 text-white">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
-                <p class="text-base max-w-3xl mx-auto mb-8 font-semibold" style="color: #F44336;">Нажмите на центральную карточку для просмотра деталей.</p>
+                <p class="text-lg max-w-3xl mx-auto mb-2">Ключевые проекты, где я выступил в роли <strong class="font-bold">оператора-постановщика</strong>.</p>
+                <p class="text-base max-w-3xl mx-auto mb-8" style="color: #EF5350;">Наведите на карточку, чтобы увидеть название, и нажмите для просмотра деталей.</p>
                 <p class="font-bold text-yellow-400 max-w-3xl mx-auto mb-12">Для просмотра некоторых проектов может потребоваться VPN.</p>
                 <div class="relative w-full">
                     <div id="main-carousel" class="carousel-container h-[60vh] max-h-[350px] sm:max-h-[450px] md:h-[75vh] md:max-h-[500px] flex justify-center items-center">
@@ -446,7 +430,6 @@
             </div>
         </section>
 
-        <!-- Experience Section -->
         <section id="experience" class="section">
             <div class="content-container w-full max-w-7xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-8 text-center section-title">Опыт работы на площадке</h2>
@@ -461,7 +444,6 @@
             </div>
         </section>
         
-        <!-- About Section -->
         <section id="about" class="section">
             <div class="content-container max-w-6xl mx-auto reveal-on-scroll">
                 <h2 class="text-4xl md:text-5xl mb-12 text-center section-title">Обо мне</h2>
@@ -477,7 +459,6 @@
             </div>
         </section>
 
-        <!-- Contact Section -->
         <section id="contact" class="section">
             <div class="content-container text-center reveal-on-scroll max-w-3xl mx-auto">
                 <h2 class="text-4xl md:text-5xl section-title">Свяжитесь со мной</h2>
@@ -494,7 +475,7 @@
                         </a>
                     </div>
                     <div class="contact-button-wrapper">
-                        <a href="https://instagram.com/hypnolix_dp" target="_blank" class="contact-button magnetic-button-contact w-full sm:w-auto">
+                        <a href="https://instagram.com/is.dp__" target="_blank" class="contact-button magnetic-button-contact w-full sm:w-auto">
                             <span>Написать в</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/></svg>
                         </a>
@@ -503,11 +484,10 @@
             </div>
         </section>
     </main>
-    <footer class="text-center py-8 px-4">
+    <footer class="text-center py-8 px-4 z-10 relative">
         <p class="text-xs text-gray-600">Every element and technique on this site was crafted from a love for detail, reflecting a piece of my soul. by IS DP © 2026</p>
     </footer>
 
-    <!-- Project Modal -->
     <div id="project-modal" class="modal-overlay">
         <div id="modal-content" class="modal-content glass-effect">
             <div class="modal-header"> <button id="modal-close-btn" class="modal-close-btn">&times;</button> </div>
@@ -541,30 +521,34 @@
             const timecodeEl = document.getElementById('timecode');
             let tcInterval;
             function formatTime(d) { return d.toString().padStart(2, '0'); }
-            recStatus.classList.add('status-standby');
-            recStatus.textContent = 'STBY';
-            let frame = 17;
-            const standbyInterval = setInterval(() => { 
-                frame = (frame + 1) % 25; 
-                timecodeEl.textContent = `TC 02:00:03:${String(frame).padStart(2, '0')}`; 
-            }, 80);
-            window.onload = () => {
-                clearInterval(standbyInterval);
-                recStatus.classList.remove('status-standby');
-                recStatus.classList.add('status-rec');
-                recStatus.textContent = 'REC';
-                let s = 3, m = 0, h = 2, f = 17;
-                tcInterval = setInterval(() => { f++; if (f >= 25) { f = 0; s++; } if (s >= 60) { s = 0; m++; } if (m >= 60) { m = 0; h++; } if (h >= 24) { h = 0; } timecodeEl.textContent = `TC ${formatTime(h)}:${formatTime(m)}:${formatTime(s)}:${formatTime(f)}`; }, 40);
-                setTimeout(() => {
-                    preloader.classList.add('is-loaded');
-                    document.body.style.overflow = '';
-                }, 800);
-            };
+            if (recStatus && timecodeEl) {
+                recStatus.classList.add('status-standby');
+                recStatus.textContent = 'STBY';
+                let frame = 17;
+                const standbyInterval = setInterval(() => { 
+                    frame = (frame + 1) % 25; 
+                    timecodeEl.textContent = `TC 02:00:03:${String(frame).padStart(2, '0')}`; 
+                }, 80);
+                window.onload = () => {
+                    clearInterval(standbyInterval);
+                    recStatus.classList.remove('status-standby');
+                    recStatus.classList.add('status-rec');
+                    recStatus.textContent = 'REC';
+                    let s = 3, m = 0, h = 2, f = 17;
+                    tcInterval = setInterval(() => { f++; if (f >= 25) { f = 0; s++; } if (s >= 60) { s = 0; m++; } if (m >= 60) { m = 0; h++; } if (h >= 24) { h = 0; } timecodeEl.textContent = `TC ${formatTime(h)}:${formatTime(m)}:${formatTime(s)}:${formatTime(f)}`; }, 40);
+                    setTimeout(() => {
+                        preloader.classList.add('is-loaded');
+                        document.body.style.overflow = '';
+                    }, 800);
+                };
+            } else {
+                setTimeout(() => { preloader.classList.add('is-loaded'); document.body.style.overflow = ''; }, 800);
+            }
         } else {
              document.body.style.overflow = '';
         }
 
-        // --- Debounce function to limit resize event calls ---
+        // --- Background animation ---
         function debounce(func, wait, immediate) {
             var timeout;
             return function() {
@@ -580,7 +564,6 @@
             };
         };
 
-        // --- Interactive Background Canvas Logic ---
         const canvas = document.getElementById('interactive-bg-canvas');
         if (canvas) {
             const ctx = canvas.getContext('2d');
@@ -645,7 +628,7 @@
             window.addEventListener('scroll', () => { if (scrollTimeout) cancelAnimationFrame(scrollTimeout); scrollTimeout = requestAnimationFrame(findInteractiveElements); }, { passive: true });
         }
 
-        // --- General Page Logic ---
+        // --- Page effects ---
         const header = document.getElementById('header');
         const body = document.body;
         const observer = new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('is-visible')), { threshold: 0.1 });
@@ -667,7 +650,6 @@
             button.addEventListener('mouseleave', () => button.style.transform = 'translate(0, 0)');
         });
 
-        // --- Modal Logic ---
         const projectModal = document.getElementById('project-modal');
         const modalContent = document.getElementById('modal-content');
         const modalCloseBtn = document.getElementById('modal-close-btn');
@@ -733,11 +715,12 @@
         projectModal.addEventListener('click', (e) => { if (e.target === projectModal) closeModal(); });
         window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && projectModal.classList.contains('is-visible')) closeModal(); });
 
-        // --- Carousel Data and Initialization ---
         const mainProjects = [
             { title: "Lill 4.0 Reveal", role: "Оператор-постановщик", description: "Презентация нового устройства Iqos.", imageUrl: "https://i.postimg.cc/NMn6xcvz/Snimok-ekrana-2026-06-04-v-14-39-03.png", videoUrl: "https://youtu.be/mK2SULbLIfA" },
+            { title: "Erich Krause", role: "Оператор-постановщик", description: "Рекламный проект.", imageUrl: "https://i.postimg.cc/tCht6Vdh/Snimok-ekrana-2026-08-23-v-14-45-33.png", videoUrl: "#" },
             { title: "Lill 4.0 Teaser", role: "Оператор-постановщик", description: "Продуктовая съемка тизера нового устройства от Iqos. Ролик был полностью снят с использованием роботизированной руки (Robotic Arm).", imageUrl: "https://i.postimg.cc/XNhLfwVZ/Snimok-ekrana-2026-06-04-v-14-34-09.png", videoUrl: "https://youtu.be/LL0UjjaSXGM" },
             { title: "Yandex x Greenworks Live", role: "Оператор-постановщик", description: "Прямая трансляция / Live-съемка.", imageUrl: "https://i.postimg.cc/QtqpRT5L/IMG-9121.avif", videoUrl: "#" },
+            { title: "Никита Кунов - Плачет", role: "Оператор-постановщик", description: "Музыкальный клип.", imageUrl: "https://i.postimg.cc/4x6tKkgQ/Snimok-ekrana-2026-07-06-v-22-08-09-1.jpg", videoUrl: "https://www.youtube.com/watch?v=5aDtf5gcxyw" },
             { title: "Закрывай замок на два оборота", role: "Второй оператор (2nd DP)", description: "На этом проекте я вырос с позиции камерного оператора до второго оператора. В мои обязанности входила полная техническая подготовка: от составления смет по свету и оборудованию до разработки и реализации схем света на площадке. Я брал на себя ключевую часть подготовительной работы, что позволяло оператору-постановщику сосредоточиться на творческих задачах. Так уж случилось, что на самой важной и дорогой смене, оператор постановщик попал в больницу и я взял на себя его обязанности, и успешно с ними спраился.  Этот проект — пример моей ответственности и роста в профессии.", imageUrl: "https://i.postimg.cc/wxtvCJyQ/2025-08-14-22-01-05.jpg", type: 'stills', stills: ['https://i.postimg.cc/rpw15BHb/2025-08-21-14-36-54.jpg', 'https://i.postimg.cc/VLXWwBM7/2025-08-21-14-46-12.jpg', 'https://i.postimg.cc/Hsn3wg1M/2025-08-22-20-29-14.jpg'], externalLink: "https://www.kinopoisk.ru/film/5368457", linkLabel: "Смотреть на Кинопоиск", videoUrl: "#" },
             { title: 'Реклама для "Aikon"', role: "Оператор-постановщик", description: "Игровая реклама для бренда Aikon. После съемок финальная цветокоррекция от студии постпродакшена не совпала с нашим изначальным видением. Чтобы продемонстрировать потенциал материала, я самостоятельно выполнил альтернативную версию грейдинга. Этот проект показывает не только мои операторские навыки, но и умение работать с цветом для достижения нужной атмосферы.", imageUrl: "https://i.postimg.cc/jjq0cVG5/2025-08-12-21-18-13.jpg", type: 'stills', stills: ['https://i.postimg.cc/wBRRDqBM/2025-06-23-15-15-03.jpg', 'https://i.postimg.cc/zGcRLb84/2025-06-23-15-12-46.jpg', 'https://i.postimg.cc/htjdPbW9/2025-06-23-15-11-15.jpg', 'https://i.postimg.cc/qqDpmKbT/2025-08-28-17-35-22.jpg'], videoUrl: "#" },
             { title: "Однажды на Шри-Ланке", role: "Оператор-постановщик", description: "Документальный проект / Влог.", imageUrl: "https://i.postimg.cc/2SJLJxK1/Snimok-ekrana-2026-06-04-v-14-51-17.png", videoUrl: "https://www.youtube.com/watch?v=PqYpT5nCSbY&t=4802s" },
@@ -755,15 +738,16 @@
         ];
 
         const experienceProjects = [
-            { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен (Camera Operator)", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
-            { title: "Ренессанс кредит", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
+            { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
+            { title: "ТНТ Premier: 'Пушкинский музей'", role: "Камерамен", description: "Работал в качестве камерного оператора (оператор камеры 'Б').", imageUrl: "https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg", externalLink: "https://premier.one/show/lichnaya-kollektsiya/season/1/episode/5?fullscreen=true", linkLabel: "Смотреть на Premier", type: 'stills', stills: ['https://i.postimg.cc/5NtChjLq/2025-08-12-21-33-23.jpg'] },
+            { title: "МАТЧ ТВ промо", role: "Камерамен, 2-й юнит", description: "Оператор-постановщик - Леша Янков, а я там работал в качестве 2-го юнита, камерамена.", imageUrl: "https://i.postimg.cc/bwpBx1N9/Snimok-ekrana-2026-07-29-v-22-37-30.png", videoUrl: "https://vimeo.com/1211737846" },
+            { title: "Ренессанс кредит", role: "Камерамен", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imageUrl: "https://i.postimg.cc/FsjJQBWQ/2025-10-14-18-01-24.png", videoUrl: "https://vimeo.com/1118589429" },
             { title: "Бомба Октябрь - Как хорошо", role: "Камерамен", description: "Музыкальный клип. Я работал в качестве камерамена. Оператор-постановщик - Леша Янков.", imageUrl: "https://i.postimg.cc/HW5ztrjk/Snimok-ekrana-2026-06-04-v-14-48-33.png", videoUrl: "https://www.youtube.com/watch?v=JDIMp67O_oI" },
             { title: "Естественно", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена.", imageUrl: "https://i.postimg.cc/tTC0x8hv/Snimok-ekrana-2026-06-04-v-15-17-23.png", videoUrl: "https://youtu.be/pl9rRNYwETk" },
-            { title: "Glazami - грустно", role: "Камерамен", description: "Принимал участие в съемках музыкального клипа в качестве камерамена.", imageUrl: "https://i.postimg.cc/wx4mVNtd/2025-10-14-17-58-34.png", videoUrl: "https://youtu.be/fOBS8DLNw2E" },
-            { title: "Яндекс.Лавка", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
-            { title: "Lime Fashion", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
-            { title: "Че о че", role: "Камерамен (Camera Operator)", description: "Принимал участие в съемках короткометражного фильма для Wink. В составе команды работал в качестве камерного оператора.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
-            { title: "SneakerBox", role: "Камерамен (Camera Operator)", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "SneakerBox", videoUrl: "#" }
+            { title: "Яндекс.Лавка. Spec", role: "Камерамен", description: "Принимал участие в съемках рекламного спека в качестве камерамена.", imageUrl: "https://i.postimg.cc/wMyw2Fq3/2025-08-12-21-02-07.jpg", videoUrl: "https://youtu.be/0Q2oAg6qWis" },
+            { title: "Lime Fashion Spec", role: "Камерамен", description: "Принимал участие в съемках для бренда Lime Fashion в качестве камерамена.", imageUrl: "https://i.postimg.cc/HkpnrNnT/2025-08-14-23-06-08.jpg", videoUrl: "https://youtu.be/hGgANT54t-s" },
+            { title: "Че о че", role: "Камерамен", description: "Принимал участие в съемках короткометражного фильма для Wink. В составе команды работал в качестве камерного оператора.", imageUrl: "https://i.postimg.cc/qvzfDcZ8/IMG-3388.jpg", videoUrl: "https://wink.ru/episodes/che-o-che-sezon-3-seriya-11-year-2025/player" },
+            { title: "SneakerBox", role: "Камерамен", description: "Рекламный ролик. Я работал в качестве камерамена. Оператор-постановщик - Алексей Янков.", imagePlaceholder: "SneakerBox", videoUrl: "#" }
         ];
         
         function initializeCarousel(carouselId, prevBtnId, nextBtnId, projects) {
@@ -775,8 +759,14 @@
                 const card = document.createElement('div');
                 card.className = 'project-card';
                 card.dataset.index = index;
+                // Use true img tags for reliable rendering across all browsers
                 const bgImage = project.imageUrl || `https://placehold.co/800x450/1d2a3a/6b7f94?text=${encodeURIComponent(project.imagePlaceholder || project.title)}`;
-                card.innerHTML = `<div class="card-inner"><div class="card-background" style="background-image: url('${bgImage}')"></div><div class="card-title-container"><h3 class="card-title">${project.title}</h3></div><div class="card-shutter card-shutter-left"></div><div class="card-shutter card-shutter-right"></div></div>`;
+                card.innerHTML = `<div class="card-inner">
+                    <div class="card-background" style="background-image: url('${bgImage}')"></div>
+                    <div class="card-title-container"><h3 class="card-title">${project.title}</h3></div>
+                    <div class="card-shutter card-shutter-left"></div>
+                    <div class="card-shutter card-shutter-right"></div>
+                </div>`;
                 carousel.appendChild(card);
             });
 
@@ -786,7 +776,14 @@
             cards.forEach(card => {
                 const cardInner = card.querySelector('.card-inner');
                 const strength = 10;
-                card.addEventListener('mousemove', (e) => { if (!card.classList.contains('active')) return; const rect = card.getBoundingClientRect(); const x = e.offsetX, y = e.offsetY; const rotateY = (x - rect.width / 2) / (rect.width / 2) * strength; const rotateX = (y - rect.height / 2) / (rect.height / 2) * -strength; cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`; });
+                card.addEventListener('mousemove', (e) => { 
+                    if (!card.classList.contains('active')) return; 
+                    const rect = card.getBoundingClientRect(); 
+                    const x = e.offsetX, y = e.offsetY; 
+                    const rotateY = (x - rect.width / 2) / (rect.width / 2) * strength; 
+                    const rotateX = (y - rect.height / 2) / (rect.height / 2) * -strength; 
+                    cardInner.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`; 
+                });
                 card.addEventListener('mouseleave', () => { cardInner.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
             });
 
@@ -808,18 +805,14 @@
                 const card = e.target.closest('.project-card');
                 if (!card) return;
                 const cardIndex = parseInt(card.dataset.index, 10);
+                
                 if (card.classList.contains('active')) {
+                    // Open Modal
                     const project = projects[cardIndex];
-                    
-                    if (project.redirect) { 
-                        window.open(project.videoUrl, '_blank'); 
-                        return; 
-                    }
+                    if (project.redirect) { window.open(project.videoUrl, '_blank'); return; }
                     
                     let urlToOpen = project.videoUrl;
-                    if (urlToOpen === '#') {
-                        urlToOpen = '';
-                    }
+                    if (urlToOpen === '#') { urlToOpen = ''; }
 
                     if (urlToOpen && urlToOpen.includes('youtu')) { 
                         const id = urlToOpen.includes('youtu.be/') ? urlToOpen.split('/').pop().split('?')[0] : urlToOpen.split('v=')[1].split('&')[0]; 
@@ -830,10 +823,18 @@
                         }
                         urlToOpen = `https://www.youtube.com/embed/${id}?autoplay=1&modestbranding=1&rel=0${startParam}`; 
                     } 
-                    else if (urlToOpen && urlToOpen.includes('vimeo.com')) { const id = urlToOpen.split('/').pop().split('?')[0]; urlToOpen = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`; }
+                    else if (urlToOpen && urlToOpen.includes('vimeo.com')) { 
+                        const id = urlToOpen.split('/').pop().split('?')[0]; 
+                        urlToOpen = `https://player.vimeo.com/video/${id}?autoplay=1&title=0&byline=0&portrait=0`; 
+                    }
                     
                     openModal(project, card, urlToOpen);
 
+                } else {
+                    // Navigate to clicked card
+                    let diff = cardIndex - currentIndex;
+                    if (Math.abs(diff) > totalCards / 2) diff = diff > 0 ? diff - totalCards : diff + totalCards;
+                    navigate(diff);
                 }
             });
             updateCarousel();
